@@ -15,7 +15,6 @@ public interface PieceMovesCalculator {
 
         Collection<ChessMove> legalMoves = new HashSet<>();
 
-
         for(int i = 0; i < moves.length; i++) {
             int row = startPosition.getRow();
             int col = startPosition.getColumn();
@@ -27,20 +26,22 @@ public interface PieceMovesCalculator {
 
                 ChessPosition newPosition = new ChessPosition(row, col);
 
-                if (!newPosition.validPosition()) {
-                    break;
-                }
-                // Open space
-                if (board.getPiece(newPosition) == null) {
-                    ChessMove legalMove = new ChessMove(startPosition, newPosition, null);
-                    legalMoves.add(legalMove);
-                }
-                // Enemy capture
-                else {
-                    if (board.getPiece(startPosition).getTeamColor() != board.getPiece(newPosition).getTeamColor()) {
-                        ChessMove captureMove = new ChessMove(startPosition, newPosition, null);
-                        legalMoves.add(captureMove);
+                if (newPosition.validPosition()) {
+                    // Open space
+                    if (board.getPiece(newPosition) == null) {
+                        ChessMove legalMove = new ChessMove(startPosition, newPosition, null);
+                        legalMoves.add(legalMove);
                     }
+                    // Enemy capture
+                    else {
+                        if (board.getPiece(startPosition).getTeamColor() != board.getPiece(newPosition).getTeamColor()) {
+                            ChessMove captureMove = new ChessMove(startPosition, newPosition, null);
+                            legalMoves.add(captureMove);
+                        }
+                        break;
+                    }
+                }
+                else{
                     break;
                 }
             }

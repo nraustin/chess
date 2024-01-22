@@ -5,7 +5,6 @@ import chess.ChessMove;
 import chess.ChessBoard;
 import chess.ChessPosition;
 
-import java.util.HashSet;
 import java.util.Collection;
 
 public class BishopMovesCalculator implements PieceMovesCalculator {

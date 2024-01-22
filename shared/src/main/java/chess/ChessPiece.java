@@ -2,6 +2,7 @@ package chess;
 
 import chess.pieces.BishopMovesCalculator;
 import chess.pieces.PieceMovesCalculator;
+import chess.pieces.QueenMovesCalculator;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -62,7 +63,10 @@ public class ChessPiece {
 
         switch (type){
             case BISHOP:
-                calcMoves =  new BishopMovesCalculator();
+                calcMoves = new BishopMovesCalculator();
+                break;
+            case QUEEN:
+                calcMoves = new QueenMovesCalculator();
                 break;
             default:
                 return null;
