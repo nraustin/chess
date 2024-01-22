@@ -16,18 +16,6 @@ public class ChessPosition {
         this.col = col;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChessPosition that = (ChessPosition) o;
-        return row == that.row && col == that.col;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(row, col);
-    }
 
     /**
      * @return which row this position is in
@@ -43,5 +31,34 @@ public class ChessPosition {
      */
     public int getColumn() {
         return col;
+    }
+
+    /**
+     * Checks if new position is valid
+     */
+    public boolean validPosition(){
+        return (0 < row && row < 9) && (0 < col && col < 9);
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPosition that = (ChessPosition) o;
+        return row == that.row && col == that.col;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, col);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessPosition{" +
+                "row=" + row +
+                ", col=" + col +
+                '}';
     }
 }

@@ -10,21 +10,9 @@ import java.util.Arrays;
  */
 public class ChessBoard {
     private ChessPiece[][] squares = new ChessPiece[8][8];
+
     public ChessBoard() {
-        
-    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChessBoard that = (ChessBoard) o;
-        return Arrays.deepEquals(squares, that.squares);
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.deepHashCode(squares);
     }
 
     /**
@@ -34,7 +22,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        squares[position.getRow()-1][position.getColumn()-1] = piece;
+        squares[position.getRow() - 1][position.getColumn() - 1] = piece;
     }
 
     /**
@@ -45,7 +33,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return squares[position.getRow()-1][position.getColumn()-1];
+        return squares[position.getRow() - 1][position.getColumn() - 1];
     }
 
     /**
@@ -54,8 +42,8 @@ public class ChessBoard {
      */
     public void resetBoard() {
 
-        for(int row = 0; row < 8; row++){
-            for(int col = 0; col < 8; col++){
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
                 squares[row][col] = null;
             }
         }
@@ -87,10 +75,46 @@ public class ChessBoard {
         squares[7][0] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
 
         //pawns
-        for(int col = 0; col < 8; col++){
+        for (int col = 0; col < 8; col++) {
             squares[1][col] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
             squares[6][col] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
         }
 
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessBoard that = (ChessBoard) o;
+        return Arrays.deepEquals(squares, that.squares);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(squares);
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder diagram = new StringBuilder();
+
+        for (int row = 0; row < 8; row++) {
+            diagram.append("|");
+            for (int col = 0; col < 8; col++) {
+                diagram.append("|");
+                ChessPiece piece = squares[row][col];
+                if (piece != null && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                    diagram.append(String.valueOf(piece).toUpperCase().charAt(0));
+                } else if (piece != null && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                    diagram.append(String.valueOf(piece).toLowerCase().charAt(0));
+                }
+            }
+        }
+        return diagram.toString();
+    }
+
+
+
 }
