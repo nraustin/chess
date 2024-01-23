@@ -11,6 +11,6 @@ public class KingMovesCalculator implements PieceMovesCalculator{
 
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition startPosition) {
-        return PieceMovesCalculator.lessMoves(board, startPosition, kingDirections);
+        return PieceMovesCalculator.fixedMoves(board, startPosition, kingDirections);
     }
 }

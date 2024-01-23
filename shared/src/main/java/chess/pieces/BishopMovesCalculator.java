@@ -13,7 +13,7 @@ public class BishopMovesCalculator implements PieceMovesCalculator {
 
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition startPosition) {
-        return PieceMovesCalculator.manyMoves(board, startPosition, bishopDirections);
+        return PieceMovesCalculator.slidingMoves(board, startPosition, bishopDirections);
     }
 }
 

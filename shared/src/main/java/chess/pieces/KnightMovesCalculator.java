@@ -12,6 +12,6 @@ public class KnightMovesCalculator implements PieceMovesCalculator {
 
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition startPosition) {
-        return PieceMovesCalculator.lessMoves(board, startPosition, knightDirections);
+        return PieceMovesCalculator.fixedMoves(board, startPosition, knightDirections);
     }
 }

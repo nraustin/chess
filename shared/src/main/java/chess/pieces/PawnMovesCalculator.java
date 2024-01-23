@@ -13,10 +13,10 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition startPosition) {
         if(board.getPiece(startPosition).getTeamColor() == ChessGame.TeamColor.WHITE){
-            return PieceMovesCalculator.lessMoves(board, startPosition, whitePawnDirections);
+            return PieceMovesCalculator.fixedMoves(board, startPosition, whitePawnDirections);
         }
         else{
-            return PieceMovesCalculator.lessMoves(board, startPosition, blackPawnDirections);
+            return PieceMovesCalculator.fixedMoves(board, startPosition, blackPawnDirections);
         }
     }
 }

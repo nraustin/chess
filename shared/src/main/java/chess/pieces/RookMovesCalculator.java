@@ -10,6 +10,6 @@ public class RookMovesCalculator implements PieceMovesCalculator {
 
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition startPosition) {
-        return PieceMovesCalculator.manyMoves(board, startPosition, rookDirections);
+        return PieceMovesCalculator.slidingMoves(board, startPosition, rookDirections);
     }
 }
