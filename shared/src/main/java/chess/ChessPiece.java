@@ -72,6 +72,9 @@ public class ChessPiece {
             case PAWN:
                 calcMoves = new PawnMovesCalculator();
                 break;
+            case KNIGHT:
+                calcMoves = new KnightMovesCalculator();
+                break;
             default:
                 return null;
         }

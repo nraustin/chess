@@ -111,6 +111,10 @@ public interface PieceMovesCalculator {
                     }
 
                 }
+                // Knights and Kings
+                else if (board.getPiece(newPosition) == null || board.getPiece(newPosition).getTeamColor() != board.getPiece(startPosition).getTeamColor()){
+                    legalMoves.add(new ChessMove(startPosition, newPosition, null));
+                }
             }
         }
         return legalMoves;
