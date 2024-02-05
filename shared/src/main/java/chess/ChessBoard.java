@@ -14,6 +14,18 @@ public class ChessBoard {
     public ChessBoard() {
 
     }
+    /**
+     * Copy constructor
+     * Deep copies each ChessPiece
+     */
+    public ChessBoard(ChessBoard copy) {
+        for(int row = 0; row < 8; row++){
+            for(int col = 0; col < 8; col++){
+                ChessPiece piece = copy.squares[row][col];
+                squares[row][col] = piece == null ? null : new ChessPiece(piece.getTeamColor(), piece.getPieceType());
+            }
+        }
+    }
 
     /**
      * Adds a chess piece to the chessboard

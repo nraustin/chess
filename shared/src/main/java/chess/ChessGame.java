@@ -13,6 +13,7 @@ public class ChessGame {
 
     private TeamColor teamTurn;
     private ChessBoard board;
+    private ChessBoard simulationBoard;
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
         this.board = new ChessBoard();
@@ -31,7 +32,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        team = teamTurn;
+        teamTurn = team;
     }
 
     /**
@@ -55,10 +56,13 @@ public class ChessGame {
         Collection<ChessMove> legalMoves = new HashSet<>();
 
         for (ChessMove move: moves){
-            // Simulate move on new board?
-            // Ensure move doesn't place king in check
+            // Simulate move on new board
+            simulationBoard = new ChessBoard(board);
+            boolean validMove = simulateMove(simulationBoard, move, piece);
+            if(validMove){
+                legalMoves.add(move);
+            }
         }
-
         return legalMoves;
     }
 
@@ -70,6 +74,14 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         throw new RuntimeException("Not implemented");
+    }
+
+    public boolean simulateMove(ChessBoard simulationBoard, ChessMove candidateMove, ChessPiece piece){
+
+        simulationBoard.addPiece(candidateMove.getStartPosition(), null);
+        simulationBoard.addPiece(candidateMove.getEndPosition(), piece);
+
+        return !isInCheck(piece.getTeamColor());
     }
 
     /**
