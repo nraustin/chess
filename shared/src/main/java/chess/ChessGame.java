@@ -60,12 +60,16 @@ public class ChessGame {
         Collection<ChessMove> moves = piece.pieceMoves(board, startPosition);
         Collection<ChessMove> legalMoves = new HashSet<>();
 
+
         for (ChessMove move: moves){
+            // Save as reference to preserve game state
             ChessBoard unmodifiedBoard = board;
+            // Simulate move
             board = simulateBoard(move, piece);
             if(!isInCheck(piece.getTeamColor())){
                 legalMoves.add(move);
             }
+            // Restore board game state
             board = unmodifiedBoard;
         }
         return legalMoves;
@@ -78,7 +82,6 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-
         ChessPiece piece = board.getPiece(move.getStartPosition());
         Collection<ChessMove> legalMoves = validMoves(move.getStartPosition());
 
@@ -98,9 +101,11 @@ public class ChessGame {
     }
 
     public ChessBoard simulateBoard(ChessMove move, ChessPiece piece){
+        // Create simulated board
         simulationBoard = new ChessBoard(board);
         boolean promotion = piece.getPieceType() == ChessPiece.PieceType.PAWN && move.getPromotionPiece() != null;
 
+        // Make moves on new board
         simulationBoard.addPiece(move.getStartPosition(), null);
         simulationBoard.addPiece(move.getEndPosition(), promotion ? new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()) : piece);
 
@@ -114,7 +119,6 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-
         for(int row = 1; row < 9; row++){
             for(int col = 1; col < 9; col++){
                 ChessPosition testPosition = new ChessPosition(row, col);
@@ -141,9 +145,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
 
-
     public boolean isInCheckmate(TeamColor teamColor) {
-
         for(int row = 1; row < 9; row++){
             for(int col = 1; col < 9; col++){
                 ChessPosition testPosition = new ChessPosition(row, col);
@@ -169,9 +171,6 @@ public class ChessGame {
      * DRY?
      */
     public boolean isInStalemate(TeamColor teamColor) {
-
-//        ChessBoard testBoard = new ChessBoard(board);
-
         for(int row = 1; row < 9; row++){
             for(int col = 1; col < 9; col++){
                 ChessPosition testPosition = new ChessPosition(row, col);
