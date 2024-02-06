@@ -3,6 +3,7 @@ package chess;
 import chess.pieces.*;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 
 /**
@@ -79,7 +80,7 @@ public class ChessPiece {
                 calcMoves = new KingMovesCalculator();
                 break;
             default:
-                return null;
+                return Collections.emptySet();
         }
 
         return calcMoves.pieceMoves(board, myPosition);
