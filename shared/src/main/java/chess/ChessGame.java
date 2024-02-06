@@ -14,11 +14,13 @@ public class ChessGame {
     private TeamColor teamTurn;
     private ChessBoard board;
     private ChessBoard simulationBoard;
-    private ChessPosition simulatedMove;
+    private ChessMove simulatedMove;
+    private boolean simulate;
     private ChessPiece piece;
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
         this.board = new ChessBoard();
+        this.simulationBoard = new ChessBoard(board);
     }
 
     /**
@@ -57,14 +59,19 @@ public class ChessGame {
         Collection<ChessMove> moves = piece.pieceMoves(board, startPosition);
         Collection<ChessMove> legalMoves = new HashSet<>();
 
+        simulate = true;
+
         for (ChessMove move: moves){
             // Simulate move on new board
             simulationBoard = new ChessBoard(board);
-            boolean validMove = simulateMove(simulationBoard, move, piece);
-            if(validMove){
+            simulationBoard.addPiece(move.getStartPosition(), null);
+            simulationBoard.addPiece(move.getEndPosition(), piece);
+
+            if(!isInCheck(piece.getTeamColor())){
                 legalMoves.add(move);
             }
         }
+        simulate = false;
         return legalMoves;
     }
 
@@ -78,14 +85,12 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
     }
 
-    public boolean simulateMove(ChessBoard simulationBoard, ChessMove candidateMove, ChessPiece piece){
-
-        simulationBoard.addPiece(candidateMove.getStartPosition(), null);
-        simulatedMove = candidateMove.getEndPosition();
-        simulationBoard.addPiece(simulatedMove, piece);
-
-        return !isInCheck(piece.getTeamColor());
-    }
+//    public boolean simulateMove(ChessBoard simulationBoard, ChessMove candidateMove, ChessPiece piece){
+//
+//
+//
+//        return !isInCheck(piece.getTeamColor());
+//    }
 
     /**
      * Determines if the given team is in check
@@ -94,16 +99,19 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+
+        ChessBoard testBoard = simulate ? simulationBoard : board;
+
         for(int row = 1; row < 9; row++){
             for(int col = 1; col < 9; col++){
                 ChessPosition testPosition = new ChessPosition(row, col);
-                if(simulationBoard.getPiece(testPosition) != null && simulationBoard.getPiece(testPosition).getTeamColor() != teamColor){
-                    ChessPiece opponent = simulationBoard.getPiece(testPosition);
-                    Collection<ChessMove> opponentMoves = opponent.pieceMoves(simulationBoard, testPosition);
+                if(testBoard.getPiece(testPosition) != null && testBoard.getPiece(testPosition).getTeamColor() != teamColor){
+                    ChessPiece opponent = testBoard.getPiece(testPosition);
+                    Collection<ChessMove> opponentMoves = opponent.pieceMoves(testBoard, testPosition);
                     for(ChessMove opponentMove: opponentMoves){
-                        if(simulationBoard.getPiece(opponentMove.getEndPosition()) != null &&
-                           simulationBoard.getPiece(opponentMove.getEndPosition()).getTeamColor() == teamColor &&
-                           simulationBoard.getPiece(opponentMove.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING) {
+                        if(testBoard.getPiece(opponentMove.getEndPosition()) != null &&
+                           testBoard.getPiece(opponentMove.getEndPosition()).getTeamColor() == teamColor &&
+                           testBoard.getPiece(opponentMove.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING) {
                             return true;
                         }
                     }
