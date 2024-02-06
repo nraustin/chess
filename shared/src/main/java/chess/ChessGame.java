@@ -20,7 +20,6 @@ public class ChessGame {
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
         this.board = new ChessBoard();
-        this.simulationBoard = new ChessBoard(board);
     }
 
     /**
@@ -59,18 +58,21 @@ public class ChessGame {
         Collection<ChessMove> moves = piece.pieceMoves(board, startPosition);
         Collection<ChessMove> legalMoves = new HashSet<>();
 
+        // isInCheck will use this boolean to determine whether to check moves on the live board or a simulated board
         simulate = true;
 
         for (ChessMove move: moves){
-            // Simulate move on new board
+            // Create simulation board
             simulationBoard = new ChessBoard(board);
+            // Simulate move
             simulationBoard.addPiece(move.getStartPosition(), null);
             simulationBoard.addPiece(move.getEndPosition(), piece);
-
+            // isInCheck checks move on simulationBoard
             if(!isInCheck(piece.getTeamColor())){
                 legalMoves.add(move);
             }
         }
+
         simulate = false;
         return legalMoves;
     }
