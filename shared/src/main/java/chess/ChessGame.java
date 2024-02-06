@@ -14,6 +14,8 @@ public class ChessGame {
     private TeamColor teamTurn;
     private ChessBoard board;
     private ChessBoard simulationBoard;
+    private ChessPosition simulatedMove;
+    private ChessPiece piece;
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
         this.board = new ChessBoard();
@@ -51,7 +53,7 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        ChessPiece piece = board.getPiece(startPosition);
+        piece = board.getPiece(startPosition);
         Collection<ChessMove> moves = piece.pieceMoves(board, startPosition);
         Collection<ChessMove> legalMoves = new HashSet<>();
 
@@ -79,7 +81,8 @@ public class ChessGame {
     public boolean simulateMove(ChessBoard simulationBoard, ChessMove candidateMove, ChessPiece piece){
 
         simulationBoard.addPiece(candidateMove.getStartPosition(), null);
-        simulationBoard.addPiece(candidateMove.getEndPosition(), piece);
+        simulatedMove = candidateMove.getEndPosition();
+        simulationBoard.addPiece(simulatedMove, piece);
 
         return !isInCheck(piece.getTeamColor());
     }
@@ -91,7 +94,23 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        for(int row = 1; row < 9; row++){
+            for(int col = 1; col < 9; col++){
+                ChessPosition testPosition = new ChessPosition(row, col);
+                if(simulationBoard.getPiece(testPosition) != null && simulationBoard.getPiece(testPosition).getTeamColor() != teamColor){
+                    ChessPiece opponent = simulationBoard.getPiece(testPosition);
+                    Collection<ChessMove> opponentMoves = opponent.pieceMoves(simulationBoard, testPosition);
+                    for(ChessMove opponentMove: opponentMoves){
+                        if(simulationBoard.getPiece(opponentMove.getEndPosition()) != null &&
+                           simulationBoard.getPiece(opponentMove.getEndPosition()).getTeamColor() == teamColor &&
+                           simulationBoard.getPiece(opponentMove.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
