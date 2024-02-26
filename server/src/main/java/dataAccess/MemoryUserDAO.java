@@ -14,7 +14,7 @@ public class MemoryUserDAO implements UserDAO {
     }
     public UserData getUser(String username) {
         for(UserData user: userDB){
-            if(username == user.username()){
+            if(username.equals(user.username())){
                 return user;
             }
         }
