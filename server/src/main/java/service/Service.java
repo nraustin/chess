@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public abstract class Service {
     protected UserDAO userDAO;
-    private GameDAO gameDAO;
+    protected GameDAO gameDAO;
     protected AuthDAO authDAO;
 
     public Service(UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO){

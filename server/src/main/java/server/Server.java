@@ -7,6 +7,7 @@ import dataAccess.UserDAO;
 import dataAccess.GameDAO;
 import dataAccess.AuthDAO;
 
+import handler.InitializeHandler;
 import handler.RegisterHandler;
 import spark.*;
 
@@ -33,9 +34,11 @@ public class Server {
 
 
         // Register your endpoints and handle exceptions here.
+        InitializeHandler initializeHandler = new InitializeHandler(userDAO, gameDAO, authDAO);
         RegisterHandler registerHandler = new RegisterHandler(userDAO, gameDAO, authDAO);
 
         // Initialize routes
+        Spark.delete("/db", initializeHandler::handle);
         Spark.post("/user", registerHandler::handle);
 
         Spark.awaitInitialization();

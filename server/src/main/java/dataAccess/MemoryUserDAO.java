@@ -5,15 +5,15 @@ import model.UserData;
 import java.util.HashSet;
 
 public class MemoryUserDAO implements UserDAO {
-    private final HashSet<UserData> users = new HashSet<>();
+    private final HashSet<UserData> userDB = new HashSet<>();
     public void createUser(UserData user) throws DataAccessException {
-        if(users.contains(user)){
+        if(userDB.contains(user)){
             throw new DataAccessException("User already exists");
         }
-        users.add(user);
+        userDB.add(user);
     }
     public UserData getUser(String username) {
-        for(UserData user: users){
+        for(UserData user: userDB){
             if(username == user.username()){
                 return user;
             }
@@ -22,6 +22,6 @@ public class MemoryUserDAO implements UserDAO {
     }
 
     public void clearData() throws DataAccessException{
-        users.clear();
+        userDB.clear();
     }
 }
