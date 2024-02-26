@@ -14,9 +14,9 @@ public class RegisterService extends Service{
 
     public AuthData register(UserData user) throws DataAccessException {
         try{
-            if(user.username() == null || user.password() == null || user.email() == null){
-                throw new DataAccessException(400, "Error: bad request");
-            }
+//            if(user.username() == null || user.password() == null || user.email() == null){
+//                throw new DataAccessException(400, "Error: bad request");
+//            }
             userDAO.createUser(user);
             AuthData authToken = authDAO.createAuth(user.username());
 

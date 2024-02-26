@@ -7,7 +7,7 @@ import dataAccess.GameDAO;
 import dataAccess.UserDAO;
 import spark.*;
 
-public abstract class BaseHandler<T> implements Handler<T> {
+public abstract class BaseHandler implements Handler {
 
     protected UserDAO userDAO;
     protected GameDAO gameDAO;
@@ -21,7 +21,7 @@ public abstract class BaseHandler<T> implements Handler<T> {
         this.authDAO = authDAO;
     }
 
-    public T deserializeRequest(Request req) {
+    public Object deserializeRequest(Request req) {
         return serializer.fromJson(req.body(), this.requestClass());
     }
 
@@ -30,16 +30,13 @@ public abstract class BaseHandler<T> implements Handler<T> {
     }
 
     public Object handle(Request req, Response res) throws DataAccessException {
-        // Processed request must be generic in order for this to work
-        T reqObject = deserializeRequest(req);
-        String authToken = req.headers("Authorization");
+        // Simplified the overcomplicated usage of generics
+        Object reqObject = deserializeRequest(req);
         // Retrieve service response object
-        Object resObject = this.performService(reqObject);
+        Object resObject = this.performService(reqObject, req);
 
         res.status(200);
         return serializeResponse(resObject);
     }
-
-
 
 }

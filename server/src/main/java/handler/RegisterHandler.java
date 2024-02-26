@@ -7,20 +7,20 @@ import dataAccess.UserDAO;
 
 import model.UserData;
 import service.RegisterService;
+import spark.Request;
 
-public class RegisterHandler extends BaseHandler<UserData> {
+public class RegisterHandler extends BaseHandler {
 
     public RegisterHandler(UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO){
         super(userDAO, gameDAO, authDAO);
     }
 
-    @Override
-    public Object performService(UserData req) throws DataAccessException {
+    public Object performService(Object reqObject, Request res) throws DataAccessException {
         RegisterService service = new RegisterService(userDAO, gameDAO, authDAO);
-        return service.register(req);
+        return service.register((UserData)reqObject);
     }
 
-    public Class<UserData> requestClass(){
+    public Class requestClass(){
         return UserData.class;
     }
 }

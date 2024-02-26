@@ -7,8 +7,8 @@ import dataAccess.UserDAO;
 import model.AuthData;
 import model.UserData;
 
-public class LoginService extends Service {
-    public LoginService(UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO){
+public class SessionService extends Service {
+    public SessionService(UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO){
         super(userDAO, gameDAO, authDAO);
     }
 
@@ -22,6 +22,16 @@ public class LoginService extends Service {
             }
             AuthData authToken = authDAO.createAuth(user.username());
             return authToken;
+        } catch (DataAccessException e){
+            throw new DataAccessException(e.getStatusCode(), e.getMessage());
+        }
+    }
+
+    public void logout(String authToken) throws DataAccessException{
+        try{
+            System.out.println(authToken);
+            AuthData targetAuthToken = authDAO.getAuth(authToken);
+            authDAO.deleteAuth(targetAuthToken);
         } catch (DataAccessException e){
             throw new DataAccessException(e.getStatusCode(), e.getMessage());
         }

@@ -9,20 +9,19 @@ import service.InitializeService;
 import spark.Request;
 import spark.Response;
 
-public class InitializeHandler extends BaseHandler<Void>{
+public class InitializeHandler extends BaseHandler{
     public InitializeHandler(UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO){
         super(userDAO, gameDAO, authDAO);
     }
     @Override
-    public Object handle(Request req, Response res){
-        String authToken = req.headers("Authorization");
-        Object resObject = this.performService(null);
+    public Object handle(Request req, Response res) throws DataAccessException {
+        Object resObject = this.performService(null, null);
 
         res.status(200);
         return serializeResponse(resObject);
     }
     @Override
-    public Object performService(Void req) {
+    public Object performService(Object reqObject, Request req) {
         InitializeService service = new InitializeService(userDAO, gameDAO, authDAO);
         try {
             service.clear();
@@ -33,7 +32,7 @@ public class InitializeHandler extends BaseHandler<Void>{
     }
 
     @Override
-    public Class<Void> requestClass(){
+    public Class requestClass(){
         return null;
     }
 }

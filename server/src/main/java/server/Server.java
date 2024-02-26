@@ -30,12 +30,13 @@ public class Server {
         // Configure handlers
         InitializeHandler initializeHandler = new InitializeHandler(userDAO, gameDAO, authDAO);
         RegisterHandler registerHandler = new RegisterHandler(userDAO, gameDAO, authDAO);
-        LoginHandler loginHandler = new LoginHandler(userDAO, gameDAO, authDAO);
+        SessionHandler sessionHandler = new SessionHandler(userDAO, gameDAO, authDAO);
 
         // Initialize routes
         Spark.delete("/db", initializeHandler::handle);
         Spark.post("/user", registerHandler::handle);
-        Spark.post("/session", loginHandler::handle);
+        Spark.post("/session", sessionHandler::handle);
+        Spark.delete("/session", sessionHandler::handle);
 
         // Handle exceptions
         handleErrors();

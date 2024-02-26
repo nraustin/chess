@@ -10,6 +10,9 @@ public class MemoryUserDAO implements UserDAO {
         if(userDB.contains(user)){
             throw new DataAccessException(403, "Error: already taken");
         }
+        else if(user.username() == null || user.password() == null || user.email() == null){
+            throw new DataAccessException(400, "Error: bad request");
+        }
         userDB.add(user);
     }
     public UserData getUser(String username) {
