@@ -19,18 +19,21 @@ public abstract class BaseHandler<T> implements Handler<T> {
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
     }
+
     public T deserializeRequest(Request req) {
-        return serializer.fromJson(req.body(), this.retrieveRequestClass());
+        return serializer.fromJson(req.body(), this.requestClass());
     }
+
     public Object serializeResponse(Object res) {
         return serializer.toJson(res);
     }
-//    public abstract Handler<T> httpHandler();
+
     public Object handle(Request req, Response res){
+        // Processed request must be generic in order for this to work
         T reqObject = deserializeRequest(req);
         String authToken = req.headers("Authorization");
         // Retrieve service response object
-        Object resObject = this.performService(authToken, reqObject);
+        Object resObject = this.performService(reqObject);
 
         res.status(200);
         return serializeResponse(resObject);

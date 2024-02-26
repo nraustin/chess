@@ -14,7 +14,7 @@ public class RegisterHandler extends BaseHandler<UserData> {
         super(userDAO, gameDAO, authDAO);
     }
 
-    public Object performService(String authToken, UserData req) {
+    public Object performService(UserData req) {
         RegisterService service = new RegisterService(userDAO, gameDAO, authDAO);
         try {
             return service.register(req);
@@ -23,7 +23,7 @@ public class RegisterHandler extends BaseHandler<UserData> {
         }
     }
 
-    public Class<UserData> retrieveRequestClass(){
+    public Class<UserData> requestClass(){
         return UserData.class;
     }
 }
