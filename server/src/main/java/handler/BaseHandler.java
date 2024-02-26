@@ -2,6 +2,7 @@ package handler;
 
 import com.google.gson.Gson;
 import dataAccess.AuthDAO;
+import dataAccess.DataAccessException;
 import dataAccess.GameDAO;
 import dataAccess.UserDAO;
 import spark.*;
@@ -28,7 +29,7 @@ public abstract class BaseHandler<T> implements Handler<T> {
         return serializer.toJson(res);
     }
 
-    public Object handle(Request req, Response res){
+    public Object handle(Request req, Response res) throws DataAccessException {
         // Processed request must be generic in order for this to work
         T reqObject = deserializeRequest(req);
         String authToken = req.headers("Authorization");

@@ -13,12 +13,17 @@ public class RegisterService extends Service{
     }
 
     public AuthData register(UserData user) throws DataAccessException {
-//        if(userDAO.getUser(user.username()) != null){
-//            throw new DataAccessException("User already exists");
-//        }
-        userDAO.createUser(user);
-        AuthData authToken = authDAO.createAuth(user.username());
+        try{
+            if(user.username() == null || user.password() == null || user.email() == null){
+                throw new DataAccessException(400, "Error: bad request");
+            }
+            userDAO.createUser(user);
+            AuthData authToken = authDAO.createAuth(user.username());
 
-        return authToken;
+            return authToken;
+
+        } catch (DataAccessException e){
+            throw new DataAccessException(e.getStatusCode(), e.getMessage());
+        }
     }
 }

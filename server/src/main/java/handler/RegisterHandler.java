@@ -14,13 +14,10 @@ public class RegisterHandler extends BaseHandler<UserData> {
         super(userDAO, gameDAO, authDAO);
     }
 
-    public Object performService(UserData req) {
+    @Override
+    public Object performService(UserData req) throws DataAccessException {
         RegisterService service = new RegisterService(userDAO, gameDAO, authDAO);
-        try {
-            return service.register(req);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        return service.register(req);
     }
 
     public Class<UserData> requestClass(){

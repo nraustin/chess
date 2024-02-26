@@ -1,14 +1,10 @@
 package server;
 
-import dataAccess.MemoryAuthDAO;
-import dataAccess.MemoryGameDAO;
-import dataAccess.MemoryUserDAO;
-import dataAccess.UserDAO;
-import dataAccess.GameDAO;
-import dataAccess.AuthDAO;
+import dataAccess.*;
 
 import handler.InitializeHandler;
 import handler.RegisterHandler;
+import handler.ErrorHandler;
 import spark.*;
 
 public class Server {
@@ -38,13 +34,21 @@ public class Server {
         RegisterHandler registerHandler = new RegisterHandler(userDAO, gameDAO, authDAO);
 
         // Initialize routes
+        System.out.println(userDAO);
+        System.out.println(gameDAO);
+        System.out.println(authDAO);
         Spark.delete("/db", initializeHandler::handle);
         Spark.post("/user", registerHandler::handle);
+
+        handleErrors();
 
         Spark.awaitInitialization();
         return Spark.port();
     }
 
+    public void handleErrors(){
+        Spark.exception(DataAccessException.class, (e, req, res) -> new ErrorHandler().handleDataAccessException(e, req, res));
+    }
 
     public void stop() {
         Spark.stop();

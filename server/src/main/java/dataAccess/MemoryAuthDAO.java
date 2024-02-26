@@ -25,7 +25,7 @@ public class MemoryAuthDAO implements AuthDAO {
             }
         }
 
-        throw new DataAccessException("Authorization not found");
+        throw new DataAccessException(404, "Authorization not found");
     }
     public void deleteAuth(String authToken) {
         authDB.remove(authToken);

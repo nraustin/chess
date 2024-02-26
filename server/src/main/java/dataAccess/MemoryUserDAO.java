@@ -8,7 +8,7 @@ public class MemoryUserDAO implements UserDAO {
     private final HashSet<UserData> userDB = new HashSet<>();
     public void createUser(UserData user) throws DataAccessException {
         if(userDB.contains(user)){
-            throw new DataAccessException("User already exists");
+            throw new DataAccessException(403, "Error: already taken");
         }
         userDB.add(user);
     }
