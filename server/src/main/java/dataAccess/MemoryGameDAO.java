@@ -5,6 +5,7 @@ import model.GameData;
 import model.UserData;
 
 import java.util.HashSet;
+import java.util.Random;
 
 public class MemoryGameDAO implements GameDAO{
 
@@ -15,7 +16,7 @@ public class MemoryGameDAO implements GameDAO{
             throw new DataAccessException(400, "Error: bad request");
         }
 
-        GameData game = new GameData(42069, null, null, gameName, new ChessGame());
+        GameData game = new GameData(new Random().nextInt(42069), null, null, gameName, new ChessGame());
         gameDB.add(game);
 
         return game.gameID();
@@ -34,13 +35,10 @@ public class MemoryGameDAO implements GameDAO{
         return gameDB;
     }
 
-    public void updateGame(String username, GameData game, String playerColor, String otherTeamUsername){
-//        if(playerColor.equals("WHITE")){
-//            game = new GameData(game.gameID(), username, opposingTeamUsername, game.gameName(), game.game());
-//        } else if(playerColor.equals("BLACK")){
-//            game = new GameData(game.gameID(), opposingTeamUsername, username, game.gameName(), game.game());
-//        }
-        game = new GameData(game.gameID(), username, otherTeamUsername, game.gameName(), game.game());
+    public void updateGame(GameData joinedGame) throws DataAccessException{
+        GameData targetGame = getGame(joinedGame.gameID());
+        gameDB.remove(targetGame);
+        gameDB.add(joinedGame);
     }
 
     public void clearData(){

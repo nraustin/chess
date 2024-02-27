@@ -43,12 +43,14 @@ public class GameService extends Service{
             GameData targetGame = gameDAO.getGame(gameID);
 
             if(playerColor != null) {
-                boolean whiteTeamAvailable = playerColor == "WHITE" && targetGame.whiteUsername() == null;
-                boolean blackTeamAvailable = playerColor == "BLACK" && targetGame.blackUsername() == null;
+                boolean whiteTeamAvailable = playerColor.equals("WHITE") && targetGame.whiteUsername() == null;
+                boolean blackTeamAvailable = playerColor.equals("BLACK") && targetGame.blackUsername() == null;
                 if (whiteTeamAvailable) {
-                    gameDAO.updateGame(username, targetGame, playerColor, targetGame.blackUsername());
+                    GameData joinedGame = new GameData(gameID, username, targetGame.blackUsername(), targetGame.gameName(), targetGame.game());
+                    gameDAO.updateGame(joinedGame);
                 } else if (blackTeamAvailable) {
-                    gameDAO.updateGame(targetGame.whiteUsername(), targetGame, playerColor, username);
+                    GameData joinedGame = new GameData(gameID, targetGame.whiteUsername(),username, targetGame.gameName(), targetGame.game());
+                    gameDAO.updateGame(joinedGame);
                 } else {
                     throw new DataAccessException(403, "Error: already taken");
                 }
