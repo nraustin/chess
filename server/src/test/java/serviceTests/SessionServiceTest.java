@@ -45,9 +45,9 @@ public class SessionServiceTest extends ServiceTest {
     @Test
     @DisplayName("Login with invalid credentials")
     void loginNegative() {
+        DataAccessException e = new DataAccessException(401, "Error: unauthorized");
         UserData imposter = new UserData("nick", "isnotsuper", "coolandhotmail.com");
 
-        DataAccessException e = new DataAccessException(401, "Error: unauthorized");
         DataAccessException thrown = assertThrows(DataAccessException.class, () -> new SessionService(userDAO, gameDAO, authDAO).login(imposter), "Should not login with invalid credentials");
 
         Assertions.assertEquals(e.getStatusCode(), thrown.getStatusCode());
@@ -67,9 +67,9 @@ public class SessionServiceTest extends ServiceTest {
     @Test
     @DisplayName("Logout with invalid authToken")
     void logoutNegative() {
+        DataAccessException e = new DataAccessException(401, "Error: unauthorized");
         String invalidAuthToken = "thisTokenDoesntExistInAuthDB";
 
-        DataAccessException e = new DataAccessException(401, "Error: unauthorized");
         DataAccessException thrown = assertThrows(DataAccessException.class, () -> new SessionService(userDAO, gameDAO, authDAO).logout(invalidAuthToken), "Should not logout with invalid authToken");
 
         Assertions.assertEquals(e.getStatusCode(), thrown.getStatusCode());

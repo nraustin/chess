@@ -11,4 +11,5 @@ public interface GameDAO {
     public HashSet<GameData> listGames();
     public void updateGame(GameData joinedGame);
     public void clearData();
+
 }

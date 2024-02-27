@@ -9,8 +9,8 @@ public class MemoryAuthDAO implements AuthDAO {
 
     private static HashSet<AuthData> authDB = new HashSet<AuthData>();
     private AuthData generateAuthToken(String username) {
-        AuthData authToken = new AuthData(UUID.randomUUID().toString(), username);
-        return authToken;
+        AuthData authData = new AuthData(UUID.randomUUID().toString(), username);
+        return authData;
     }
     public AuthData createAuth(String username) {
         AuthData authToken = generateAuthToken(username);
@@ -34,5 +34,9 @@ public class MemoryAuthDAO implements AuthDAO {
 
     public void clearData(){
         authDB.clear();
+    }
+
+    public final HashSet<AuthData> listAuth(){
+        return authDB;
     }
 }
