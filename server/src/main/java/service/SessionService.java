@@ -19,6 +19,7 @@ public class SessionService extends Service {
             if(targetUser == null || !targetUser.password().equals(user.password())){
                 throw new DataAccessException(401, "Error: unauthorized");
             }
+
             AuthData authentication = authDAO.createAuth(user.username());
             return authentication;
         } catch (DataAccessException e){
@@ -29,6 +30,10 @@ public class SessionService extends Service {
     public void logout(String authToken) throws DataAccessException{
         try{
             AuthData targetAuthData = authDAO.getAuth(authToken);
+            if(targetAuthData == null){
+                throw new DataAccessException(401, "Error: unauthorized");
+            }
+
             authDAO.deleteAuth(targetAuthData);
         } catch (DataAccessException e){
             throw new DataAccessException(e.getStatusCode(), e.getMessage());

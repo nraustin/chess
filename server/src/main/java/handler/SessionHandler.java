@@ -10,6 +10,8 @@ import model.UserData;
 import service.SessionService;
 import spark.Request;
 
+import java.net.CookieHandler;
+
 public class SessionHandler extends BaseHandler{
 
     public SessionHandler(UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO){
@@ -18,11 +20,7 @@ public class SessionHandler extends BaseHandler{
 
     public Object performService(Object reqObject, Request req) throws DataAccessException {
         SessionService service = new SessionService(userDAO, gameDAO, authDAO);
-//        if(reqObject instanceof UserData){
-//            return service.login((UserData)reqObject);
-//        }
-//        service.logout(req.headers("Authorization"));
-//        return null;
+
         switch(req.requestMethod()){
             case "POST":
                 return service.login((UserData)reqObject);
@@ -35,9 +33,9 @@ public class SessionHandler extends BaseHandler{
     }
 
     public Class requestClass(Request req){
-        if(req.requestMethod() == "POST"){
+        if(req.requestMethod().equals("POST")){
             return UserData.class;
         }
-        return Void.class;
+        return void.class;
     }
 }

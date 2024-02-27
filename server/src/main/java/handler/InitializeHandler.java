@@ -20,7 +20,6 @@ public class InitializeHandler extends BaseHandler{
         res.status(200);
         return serializeResponse(resObject);
     }
-    @Override
     public Object performService(Object reqObject, Request req) {
         InitializeService service = new InitializeService(userDAO, gameDAO, authDAO);
         try {
@@ -31,8 +30,7 @@ public class InitializeHandler extends BaseHandler{
         return null;
     }
 
-    @Override
     public Class requestClass(Request req){
-        return null;
+        return void.class;
     }
 }

@@ -11,31 +11,27 @@ public class MemoryGameDAO implements GameDAO{
 
     private final HashSet<GameData> gameDB = new HashSet<>();
 
-    public Integer createGame(String gameName) throws DataAccessException{
-        if(gameName == null){
-            throw new DataAccessException(400, "Error: bad request");
-        }
-
+    public Integer createGame(String gameName) {
         GameData game = new GameData(new Random().nextInt(42069), null, null, gameName, new ChessGame());
         gameDB.add(game);
 
         return game.gameID();
     }
 
-    public GameData getGame(int gameID) throws DataAccessException{
+    public GameData getGame(int gameID) {
         for(GameData gameData: gameDB){
             if(gameID == gameData.gameID()){
                 return gameData;
             }
         }
-        throw new DataAccessException(400, "Error: bad request");
+        return null;
     }
 
     public HashSet<GameData> listGames(){
         return gameDB;
     }
 
-    public void updateGame(GameData joinedGame) throws DataAccessException{
+    public void updateGame(GameData joinedGame){
         GameData targetGame = getGame(joinedGame.gameID());
         gameDB.remove(targetGame);
         gameDB.add(joinedGame);

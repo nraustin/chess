@@ -14,6 +14,13 @@ public class RegisterService extends Service{
 
     public AuthData register(UserData user) throws DataAccessException {
         try{
+            if(userDAO.getUser(user.username()) != null){
+                throw new DataAccessException(403, "Error: already taken");
+            }
+            else if(user.username() == null || user.password() == null || user.email() == null){
+                throw new DataAccessException(400, "Error: bad request");
+            }
+
             userDAO.createUser(user);
             AuthData authentication = authDAO.createAuth(user.username());
 

@@ -7,7 +7,7 @@ import dataAccess.GameDAO;
 import dataAccess.UserDAO;
 import spark.*;
 
-public abstract class BaseHandler<T> implements Handler<T> {
+public abstract class BaseHandler implements Handler {
 
     protected UserDAO userDAO;
     protected GameDAO gameDAO;
@@ -21,27 +21,16 @@ public abstract class BaseHandler<T> implements Handler<T> {
         this.authDAO = authDAO;
     }
 
-    public T deserializeRequest(Request req) {
+    public Object deserializeRequest(Request req) {
         return serializer.fromJson(req.body(), this.requestClass(req));
     }
 
     public Object serializeResponse(Object res) {
-//        if(res == "{}"){
-//            return res;
-//        }
         return serializer.toJson(res);
     }
 
     public Object handle(Request req, Response res) throws DataAccessException {
-        // Testing for joinGame
-        // Last return of the generics?
-        T reqObject = deserializeRequest(req);
-        System.out.println(String.format("Deserialized object: %s", reqObject));
-
-        // Retrieve service response object
-        Object resObject = this.performService(reqObject, req);
-
-        System.out.println(String.format("What's in base handler before return: %s", resObject));
+        Object resObject = this.performService(deserializeRequest(req), req);
 
         res.status(200);
         return serializeResponse(resObject);

@@ -9,8 +9,8 @@ public class GameResponse extends Response{
     private HashSet<GameData> games;
     private int gameID;
 
-    public GameResponse(String message, HashSet<GameData> games){
-        super(message);
+    public GameResponse(HashSet<GameData> games){
+        super(null);
         this.games = games;
     }
 

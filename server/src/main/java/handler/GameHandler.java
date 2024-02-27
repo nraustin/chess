@@ -13,6 +13,7 @@ import spark.Request;
 import java.util.HashSet;
 
 public class GameHandler extends BaseHandler{
+
     public GameHandler(UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO){
         super(userDAO, gameDAO, authDAO);
     }
@@ -26,7 +27,6 @@ public class GameHandler extends BaseHandler{
             case "POST":
                 return createGameService((GameData)reqObject, service, req);
             case "PUT":
-                System.out.println(String.format("join game request Object: %s", reqObject));
                 return joinGameService((JoinGameRequest)reqObject, service, req);
             default:
                 throw new DataAccessException(400, "Error: unsupported request method");
@@ -35,7 +35,7 @@ public class GameHandler extends BaseHandler{
 
     public Object listGamesService(GameService service, Request req) throws DataAccessException {
         HashSet<GameData> games = service.listGames(req.headers("Authorization"));
-        GameResponse listGamesRes= new GameResponse("games", games);
+        GameResponse listGamesRes= new GameResponse(games);
 
         return listGamesRes;
     }
@@ -44,7 +44,6 @@ public class GameHandler extends BaseHandler{
         Integer gameID = service.createGame(newGame.gameName(), req.headers("Authorization"));
         GameResponse createGameResponse = new GameResponse(gameID);
 
-        System.out.println(String.format("in createGameService: %s",createGameResponse));
         return createGameResponse;
     }
 
@@ -54,7 +53,7 @@ public class GameHandler extends BaseHandler{
     }
 
     public Class requestClass(Request req){
-        if(req.requestMethod() == "PUT"){
+        if(req.requestMethod().equals("PUT")){
             return JoinGameRequest.class;
         }
         return GameData.class;

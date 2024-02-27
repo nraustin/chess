@@ -26,7 +26,6 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-
         // Configure handlers
         InitializeHandler initializeHandler = new InitializeHandler(userDAO, gameDAO, authDAO);
         RegisterHandler registerHandler = new RegisterHandler(userDAO, gameDAO, authDAO);
