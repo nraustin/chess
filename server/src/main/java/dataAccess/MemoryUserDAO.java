@@ -24,7 +24,7 @@ public class MemoryUserDAO implements UserDAO {
         return null;
     }
 
-    public void clearData() throws DataAccessException{
+    public void clearData(){
         userDB.clear();
     }
 }

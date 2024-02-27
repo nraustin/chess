@@ -20,7 +20,7 @@ public class RegisterHandler extends BaseHandler {
         return service.register((UserData)reqObject);
     }
 
-    public Class requestClass(){
+    public Class requestClass(Request req){
         return UserData.class;
     }
 }

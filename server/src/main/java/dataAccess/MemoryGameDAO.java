@@ -27,15 +27,20 @@ public class MemoryGameDAO implements GameDAO{
                 return gameData;
             }
         }
-        return null;
+        throw new DataAccessException(400, "Error: bad request");
     }
 
     public HashSet<GameData> listGames(){
         return gameDB;
     }
 
-    public void updateGame(GameData game){
-
+    public void updateGame(String username, GameData game, String playerColor, String otherTeamUsername){
+//        if(playerColor.equals("WHITE")){
+//            game = new GameData(game.gameID(), username, opposingTeamUsername, game.gameName(), game.game());
+//        } else if(playerColor.equals("BLACK")){
+//            game = new GameData(game.gameID(), opposingTeamUsername, username, game.gameName(), game.game());
+//        }
+        game = new GameData(game.gameID(), username, otherTeamUsername, game.gameName(), game.game());
     }
 
     public void clearData(){

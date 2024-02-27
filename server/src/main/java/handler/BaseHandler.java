@@ -22,21 +22,18 @@ public abstract class BaseHandler<T> implements Handler<T> {
     }
 
     public T deserializeRequest(Request req) {
-        System.out.println(String.format("Request class: %s", this.requestClass()));
-        return serializer.fromJson(req.body(), this.requestClass());
+        return serializer.fromJson(req.body(), this.requestClass(req));
     }
 
     public Object serializeResponse(Object res) {
-        if(res == "{}"){
-            System.out.println("empty res");
-            return res;
-        }
-        Object ser = serializer.toJson(res);
-        System.out.println(String.format("Serialized object: %s", ser));
-        return ser;
+//        if(res == "{}"){
+//            return res;
+//        }
+        return serializer.toJson(res);
     }
 
     public Object handle(Request req, Response res) throws DataAccessException {
+        // Testing for joinGame
         // Last return of the generics?
         T reqObject = deserializeRequest(req);
         System.out.println(String.format("Deserialized object: %s", reqObject));

@@ -40,6 +40,7 @@ public class Server {
         Spark.delete("/session", sessionHandler::handle);
         Spark.get("/game", gameHandler::handle);
         Spark.post("/game", gameHandler::handle);
+        Spark.put("/game", gameHandler::handle);
 
         // Handle exceptions
         handleErrors();

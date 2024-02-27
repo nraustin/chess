@@ -32,7 +32,7 @@ public class InitializeHandler extends BaseHandler{
     }
 
     @Override
-    public Class requestClass(){
+    public Class requestClass(Request req){
         return null;
     }
 }

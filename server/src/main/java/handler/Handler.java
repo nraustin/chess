@@ -9,5 +9,5 @@ public interface Handler<T> {
     public Object serializeResponse(Object res);
     public Object handle(Request req, Response res) throws DataAccessException;
     public Object performService(T req, Request res) throws DataAccessException;
-    public Class<T> requestClass();
+    public Class<T> requestClass(Request req);
 }

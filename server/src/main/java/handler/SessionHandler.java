@@ -18,16 +18,26 @@ public class SessionHandler extends BaseHandler{
 
     public Object performService(Object reqObject, Request req) throws DataAccessException {
         SessionService service = new SessionService(userDAO, gameDAO, authDAO);
-        if(reqObject instanceof UserData){
-            return service.login((UserData)reqObject);
+//        if(reqObject instanceof UserData){
+//            return service.login((UserData)reqObject);
+//        }
+//        service.logout(req.headers("Authorization"));
+//        return null;
+        switch(req.requestMethod()){
+            case "POST":
+                return service.login((UserData)reqObject);
+            case "DELETE":
+                service.logout(req.headers("Authorization"));
+                return null;
+            default:
+                throw new DataAccessException(400, "Error: unsupported request method");
         }
-        service.logout(req.headers("Authorization"));
-        System.out.println(String.format("logging out, reqObject: %s", req.requestMethod()));
-        return "{}";
     }
 
-
-    public Class requestClass(){
-        return UserData.class;
+    public Class requestClass(Request req){
+        if(req.requestMethod() == "POST"){
+            return UserData.class;
+        }
+        return Void.class;
     }
 }

@@ -14,7 +14,7 @@ public class GameResponse extends Response{
         this.games = games;
     }
 
-    public GameResponse(Integer gameID){
+    public GameResponse(int gameID){
         super(null);
         this.gameID = gameID;
     }
