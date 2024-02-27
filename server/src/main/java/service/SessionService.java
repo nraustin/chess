@@ -17,11 +17,10 @@ public class SessionService extends Service {
             UserData targetUser = userDAO.getUser(user.username());
 
             if(targetUser == null || !targetUser.password().equals(user.password())){
-                System.out.println(targetUser);
                 throw new DataAccessException(401, "Error: unauthorized");
             }
-            AuthData authToken = authDAO.createAuth(user.username());
-            return authToken;
+            AuthData authentication = authDAO.createAuth(user.username());
+            return authentication;
         } catch (DataAccessException e){
             throw new DataAccessException(e.getStatusCode(), e.getMessage());
         }
@@ -29,9 +28,8 @@ public class SessionService extends Service {
 
     public void logout(String authToken) throws DataAccessException{
         try{
-            System.out.println(authToken);
-            AuthData targetAuthToken = authDAO.getAuth(authToken);
-            authDAO.deleteAuth(targetAuthToken);
+            AuthData targetAuthData = authDAO.getAuth(authToken);
+            authDAO.deleteAuth(targetAuthData);
         } catch (DataAccessException e){
             throw new DataAccessException(e.getStatusCode(), e.getMessage());
         }

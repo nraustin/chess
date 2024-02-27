@@ -31,12 +31,15 @@ public class Server {
         InitializeHandler initializeHandler = new InitializeHandler(userDAO, gameDAO, authDAO);
         RegisterHandler registerHandler = new RegisterHandler(userDAO, gameDAO, authDAO);
         SessionHandler sessionHandler = new SessionHandler(userDAO, gameDAO, authDAO);
+        GameHandler gameHandler = new GameHandler(userDAO, gameDAO, authDAO);
 
         // Initialize routes
         Spark.delete("/db", initializeHandler::handle);
         Spark.post("/user", registerHandler::handle);
         Spark.post("/session", sessionHandler::handle);
         Spark.delete("/session", sessionHandler::handle);
+        Spark.get("/game", gameHandler::handle);
+        Spark.post("/game", gameHandler::handle);
 
         // Handle exceptions
         handleErrors();

@@ -1,5 +1,6 @@
 package handler;
 
+import com.google.gson.Gson;
 import dataAccess.AuthDAO;
 import dataAccess.DataAccessException;
 import dataAccess.GameDAO;
@@ -21,8 +22,10 @@ public class SessionHandler extends BaseHandler{
             return service.login((UserData)reqObject);
         }
         service.logout(req.headers("Authorization"));
-        return null;
+        System.out.println(String.format("logging out, reqObject: %s", req.requestMethod()));
+        return "{}";
     }
+
 
     public Class requestClass(){
         return UserData.class;
