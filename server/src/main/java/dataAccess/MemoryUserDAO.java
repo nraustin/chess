@@ -24,8 +24,4 @@ public class MemoryUserDAO implements UserDAO {
         userDB.clear();
     }
 
-    public final HashSet<UserData> listUsers(){
-        return userDB;
-    }
-
 }

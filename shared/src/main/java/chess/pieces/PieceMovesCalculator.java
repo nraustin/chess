@@ -8,8 +8,6 @@ import java.util.HashSet;
 public interface PieceMovesCalculator {
     Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition);
 
-    // Thanks Java 8
-
     // Move calculation logic for Bishops, Rooks, Queens
     public static Collection<ChessMove> slidingMoves(ChessBoard board, ChessPosition startPosition, int[][] moves) {
 
@@ -77,10 +75,7 @@ public interface PieceMovesCalculator {
                     if(moves[i][1] == 0){
                         if(board.getPiece(newPosition) == null){
                             if(promotion){
-                                legalMoves.add(new ChessMove(startPosition, newPosition, ChessPiece.PieceType.ROOK));
-                                legalMoves.add(new ChessMove(startPosition, newPosition, ChessPiece.PieceType.KNIGHT));
-                                legalMoves.add(new ChessMove(startPosition, newPosition, ChessPiece.PieceType.BISHOP));
-                                legalMoves.add(new ChessMove(startPosition, newPosition, ChessPiece.PieceType.QUEEN));
+                                pawnPromotionHandler(legalMoves, startPosition, newPosition);
                             }
                             else{
                                 // Single forward advancement case
@@ -103,10 +98,7 @@ public interface PieceMovesCalculator {
                     else {
                         if(board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() != board.getPiece(startPosition).getTeamColor()){
                             if(promotion){
-                                legalMoves.add(new ChessMove(startPosition, newPosition, ChessPiece.PieceType.ROOK));
-                                legalMoves.add(new ChessMove(startPosition, newPosition, ChessPiece.PieceType.KNIGHT));
-                                legalMoves.add(new ChessMove(startPosition, newPosition, ChessPiece.PieceType.BISHOP));
-                                legalMoves.add(new ChessMove(startPosition, newPosition, ChessPiece.PieceType.QUEEN));
+                                pawnPromotionHandler(legalMoves, startPosition, newPosition);
                             }
                             else{
                                 ChessMove captureDiagonal = new ChessMove(startPosition, newPosition, null);
@@ -123,6 +115,13 @@ public interface PieceMovesCalculator {
             }
         }
         return legalMoves;
+    }
+
+    private static void pawnPromotionHandler(Collection<ChessMove> moves, ChessPosition startPosition, ChessPosition newPosition){
+        moves.add(new ChessMove(startPosition, newPosition, ChessPiece.PieceType.ROOK));
+        moves.add(new ChessMove(startPosition, newPosition, ChessPiece.PieceType.KNIGHT));
+        moves.add(new ChessMove(startPosition, newPosition, ChessPiece.PieceType.BISHOP));
+        moves.add(new ChessMove(startPosition, newPosition, ChessPiece.PieceType.QUEEN));
     }
 
 }

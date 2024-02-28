@@ -36,7 +36,4 @@ public class MemoryAuthDAO implements AuthDAO {
         authDB.clear();
     }
 
-    public final HashSet<AuthData> listAuth(){
-        return authDB;
-    }
 }

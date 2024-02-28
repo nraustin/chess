@@ -17,6 +17,10 @@ public class InitializeServiceTest extends ServiceTest{
     private HashSet<GameData> populatedGames = new HashSet<>();
     private HashSet<AuthData> populatedAuth = new HashSet<>();
     private HashSet<UserData> populatedUsers = new HashSet<>();
+
+    private int testGame;
+    private AuthData testAuthData;
+    private UserData testUser;
     @Test
     @DisplayName("Clear all data from DAOs")
     void clearData() throws DataAccessException {
@@ -27,54 +31,35 @@ public class InitializeServiceTest extends ServiceTest{
 
         new InitializeService(userDAO, gameDAO, authDAO).clear();
 
-        Assertions.assertTrue(userDAO.listUsers().isEmpty());
-        Assertions.assertTrue(gameDAO.listGames().isEmpty());
-        Assertions.assertTrue(authDAO.listAuth().isEmpty());
+        Assertions.assertNull(userDAO.getUser(testUser.username()));
+        Assertions.assertNull(gameDAO.getGame(testGame));
+        Assertions.assertNull(authDAO.getAuth(testAuthData.authToken()));
     }
 
     void populateGamesDirectly(){
-        int g1 = gameDAO.createGame("Chess is fun");
-        int g2 = gameDAO.createGame("except");
-        int g3 = gameDAO.createGame("for when it's testing time");
+        testGame = gameDAO.createGame("Chess is fun");
 
-        Assertions.assertEquals(g1, gameDAO.getGame(g1).gameID());
-        Assertions.assertEquals(g2, gameDAO.getGame(g2).gameID());
-        Assertions.assertEquals(g3, gameDAO.getGame(g3).gameID());
+        Assertions.assertEquals(testGame, gameDAO.getGame(testGame).gameID());
 
-        populatedGames.add(gameDAO.getGame(g1));
-        populatedGames.add(gameDAO.getGame(g2));
-        populatedGames.add(gameDAO.getGame(g3));
+        populatedGames.add(gameDAO.getGame(testGame));
+
     }
 
     void populateAuthDirectly(){
-        AuthData a1 = authDAO.createAuth("Its");
-        AuthData a2 = authDAO.createAuth("getting");
-        AuthData a3 = authDAO.createAuth("pretty late");
+        testAuthData = authDAO.createAuth("here for a good time");
 
-        Assertions.assertEquals(a1, authDAO.getAuth(a1.authToken()));
-        Assertions.assertEquals(a2, authDAO.getAuth(a2.authToken()));
-        Assertions.assertEquals(a3, authDAO.getAuth(a3.authToken()));
+        Assertions.assertEquals(testAuthData, authDAO.getAuth(testAuthData.authToken()));
 
-        populatedAuth.add(a1);
-        populatedAuth.add(a2);
-        populatedAuth.add(a3);
+        populatedAuth.add(testAuthData);
     }
 
     void populateUsersDirectly(){
-        UserData u1 = new UserData("u1", "p1", "e1");
-        UserData u2 = new UserData("u2", "p2", "e2");
-        UserData u3 = new UserData("u3", "p3", "e3");
+        testUser = new UserData("u1", "p1", "e1");
 
-        userDAO.createUser(u1);
-        userDAO.createUser(u2);
-        userDAO.createUser(u3);
+        userDAO.createUser(testUser);
 
-        Assertions.assertEquals(u1, userDAO.getUser(u1.username()));
-        Assertions.assertEquals(u2, userDAO.getUser(u2.username()));
-        Assertions.assertEquals(u3, userDAO.getUser(u3.username()));
+        Assertions.assertEquals(testUser, userDAO.getUser(testUser.username()));
 
-        populatedUsers.add(u1);
-        populatedUsers.add(u2);
-        populatedUsers.add(u3);
+        populatedUsers.add(testUser);
     }
 }

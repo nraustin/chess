@@ -9,5 +9,4 @@ public interface AuthDAO {
     public AuthData getAuth(String authToken);
     public void deleteAuth(AuthData authToken);
     public void clearData();
-    public HashSet<AuthData> listAuth();
 }
