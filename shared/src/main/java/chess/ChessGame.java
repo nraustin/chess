@@ -172,8 +172,8 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         for(int row = 1; row < 9; row++){
-            for(int col = 1; col < 9; col++){
-                ChessPosition testPosition = new ChessPosition(row, col);
+            for(int cols = 1; cols < 9; cols++){
+                ChessPosition testPosition = new ChessPosition(row, cols);
                 if(board.getPiece(testPosition) != null && board.getPiece(testPosition).getTeamColor() == teamColor){
                     if(!validMoves(testPosition).isEmpty()){
                         return false;
