@@ -52,7 +52,7 @@ public interface PieceMovesCalculator {
 
         Collection<ChessMove> legalMoves = new HashSet<>();
 
-        // TODO: refactor this unintuitive loop
+        // This must be refactored
         for (int i = 0; i < moves.length; i++) {
             int row = startPosition.getRow();
             int col = startPosition.getColumn();
