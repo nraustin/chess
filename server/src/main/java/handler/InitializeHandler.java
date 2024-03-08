@@ -1,7 +1,7 @@
 package handler;
 
 import dataAccess.AuthDAO;
-import dataAccess.DataAccessException;
+import dataAccess.exception.DataAccessException;
 import dataAccess.GameDAO;
 import dataAccess.UserDAO;
 

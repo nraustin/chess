@@ -1,6 +1,6 @@
 package serviceTests;
 
-import dataAccess.DataAccessException;
+import dataAccess.exception.DataAccessException;
 import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;

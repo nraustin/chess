@@ -1,6 +1,6 @@
 package serviceTests;
 
-import dataAccess.DataAccessException;
+import dataAccess.exception.DataAccessException;
 import dataAccess.UserDAO;
 import model.AuthData;
 import model.GameData;

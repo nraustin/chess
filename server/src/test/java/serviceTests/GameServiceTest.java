@@ -1,20 +1,15 @@
 package serviceTests;
 
-import chess.ChessGame;
-import dataAccess.DataAccessException;
+import dataAccess.exception.DataAccessException;
 import model.AuthData;
 import model.GameData;
-import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import service.GameService;
-import service.RegisterService;
-import service.SessionService;
 
 import java.util.HashSet;
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
