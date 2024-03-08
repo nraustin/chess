@@ -14,11 +14,11 @@ public abstract class BaseSQLDAO {
 
     public BaseSQLDAO() {}
 
+    // Universal update handler
     protected int update(String sqlStatement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(sqlStatement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
-                    // Universal logic for db updates
                     var param = params[i];
 
                     if(param instanceof String p){
@@ -35,23 +35,21 @@ public abstract class BaseSQLDAO {
 
                 var rs = ps.getGeneratedKeys();
                 if (rs.next()) {
-                    System.out.println(rs.getInt(1));
                     return rs.getInt(1);
                 }
 
                 return 0;
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             throw new DataAccessException(500, String.format("unable to update database: %s, %s", sqlStatement, e.getMessage()));
         }
     }
 
+    // Universal query handler
     protected <D> D query(String sqlStatement, Function<ResultSet, D> rsHandler, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(sqlStatement)) {
                 for (var i = 0; i < params.length; i++) {
-                    // Universal logic for db queries
                     var param = params[i];
 
                     if(param instanceof String p){

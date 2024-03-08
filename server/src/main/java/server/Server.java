@@ -4,6 +4,7 @@ import dataAccess.*;
 import dataAccess.exception.*;
 
 import dataAccess.sql.SQLAuthDAO;
+import dataAccess.sql.SQLGameDAO;
 import dataAccess.sql.SQLUserDAO;
 import handler.*;
 import spark.*;
@@ -19,7 +20,7 @@ public class Server {
         try {
             userDAO = new SQLUserDAO();
             authDAO = new SQLAuthDAO();
-            gameDAO = new MemoryGameDAO();
+            gameDAO = new SQLGameDAO();
         } catch (DataAccessException e){
             throw new RuntimeException(e.getMessage());
         }

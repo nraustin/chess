@@ -26,7 +26,7 @@ public class GameServiceTest extends ServiceTest{
     }
 
     @DisplayName("Populate games for game service tests")
-    void populateGamesDirectly(){
+    void populateGamesDirectly() throws DataAccessException {
         int g1 = gameDAO.createGame("Chess is fun");
         int g2 = gameDAO.createGame("except");
         int g3 = gameDAO.createGame("for when it's testing time");

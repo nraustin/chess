@@ -17,12 +17,9 @@ public class SessionService extends Service {
             UserData targetUser = userDAO.getUser(user.username());
 
             if(targetUser == null || !userDAO.verifyUser(user.username(), user.password())){
-                System.out.println(String.format("tguser: %s", targetUser));
                 throw new DataAccessException(401, "Error: unauthorized");
             }
-            System.out.println(String.format("user from login: %s", user.username()));
             AuthData authentication = authDAO.createAuth(user.username());
-            System.out.println(String.format("authData from login: %s", authentication));
             return authentication;
         } catch (DataAccessException e){
             throw new DataAccessException(e.getStatusCode(), e.getMessage());
@@ -35,7 +32,6 @@ public class SessionService extends Service {
             if(targetAuthData == null){
                 throw new DataAccessException(401, "Error: unauthorized");
             }
-            System.out.println(String.format("authData from login: %s", targetAuthData));
             authDAO.deleteAuth(targetAuthData);
         } catch (DataAccessException e){
             throw new DataAccessException(e.getStatusCode(), e.getMessage());

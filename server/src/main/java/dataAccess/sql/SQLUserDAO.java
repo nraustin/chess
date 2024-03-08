@@ -40,8 +40,6 @@ public class SQLUserDAO extends BaseSQLDAO implements UserDAO {
                         throw new RuntimeException(e.getMessage());
                     }
                 }, username);
-        System.out.println(String.format("pwd: %s", dbPassword));
-        System.out.println(String.format("match: %s", new BCryptPasswordEncoder().matches(providedPassword, dbPassword)));
         return new BCryptPasswordEncoder().matches(providedPassword, dbPassword);
     }
 

@@ -36,7 +36,7 @@ public class InitializeServiceTest extends ServiceTest{
         Assertions.assertNull(authDAO.getAuth(testAuthData.authToken()));
     }
 
-    void populateGamesDirectly(){
+    void populateGamesDirectly() throws DataAccessException {
         testGame = gameDAO.createGame("Chess is fun");
 
         Assertions.assertEquals(testGame, gameDAO.getGame(testGame).gameID());
