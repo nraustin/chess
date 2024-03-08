@@ -20,29 +20,44 @@ public class SQLUserDAO extends BaseSQLDAO implements UserDAO {
               `username` varchar(128) NOT NULL,
               `password` varchar(128) NOT NULL,
               `email` varchar(256) NOT NULL,
-              PRIMARY KEY(username)
+              PRIMARY KEY (username)
             ) 
             """
     };
 
-    public boolean verifyUser(String password, String providedPassword){
-        return new BCryptPasswordEncoder().matches(password, providedPassword);
+    public boolean verifyUser(String username, String providedPassword) throws DataAccessException {
+        String sqlStatement = "SELECT password FROM user WHERE username = ?";
+        String dbPassword = query(sqlStatement,
+                resultSet -> {
+                    try{
+                        if(resultSet.next()){
+                            return resultSet.getString("password");
+                        }
+                        else{
+                            return null;
+                        }
+                    } catch (SQLException e){
+                        throw new RuntimeException(e.getMessage());
+                    }
+                }, username);
+        System.out.println(String.format("pwd: %s", dbPassword));
+        System.out.println(String.format("match: %s", new BCryptPasswordEncoder().matches(providedPassword, dbPassword)));
+        return new BCryptPasswordEncoder().matches(providedPassword, dbPassword);
     }
+
 
     public void createUser(UserData user) throws DataAccessException {
         String encryptedPassword = new BCryptPasswordEncoder().encode(user.password());
-        String statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?);";
-        update(statement, user.username(), encryptedPassword, user.email());
+        String sqlStatement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
+        update(sqlStatement, user.username(), encryptedPassword, user.email());
     }
 
     public UserData getUser(String username) throws DataAccessException {
-        String statement = "SELECT * FROM user WHERE username = ?";
-        UserData userData = query(statement,
+        String sqlStatement = "SELECT * FROM user WHERE username = ?";
+        UserData userData = query(sqlStatement,
                 resultSet -> {
                     try {
                         if(resultSet.next()){
-                            System.out.println(String.format("from getUserSQL rs %s", resultSet.getString("username")));
-
                             return new UserData(resultSet.getString("username"),
                                                 resultSet.getString("password"),
                                                 resultSet.getString("email"));
@@ -50,14 +65,13 @@ public class SQLUserDAO extends BaseSQLDAO implements UserDAO {
                             return null;
                         }
                     } catch (SQLException e) {
-                        throw new RuntimeException(e);
+                        throw new RuntimeException(e.getMessage());
                     }
                 }, username);
-        System.out.println(String.format("from getUserSQL %s", username));
         return userData;
     }
 
     public void clearData() throws DataAccessException {
-        update("DELETE FROM user;");
+        update("DELETE FROM user");
     }
 }

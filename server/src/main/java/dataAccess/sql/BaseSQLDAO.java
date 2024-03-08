@@ -14,9 +14,9 @@ public abstract class BaseSQLDAO {
 
     public BaseSQLDAO() {}
 
-    protected int update(String statement, Object... params) throws DataAccessException {
+    protected int update(String sqlStatement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+            try (var ps = conn.prepareStatement(sqlStatement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
                     // Universal logic for db updates
                     var param = params[i];
@@ -42,13 +42,14 @@ public abstract class BaseSQLDAO {
                 return 0;
             }
         } catch (SQLException e) {
-            throw new DataAccessException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
+            System.out.println(e.getMessage());
+            throw new DataAccessException(500, String.format("unable to update database: %s, %s", sqlStatement, e.getMessage()));
         }
     }
 
-    protected <D> D query(String statement, Function<ResultSet, D> rsHandler, Object... params) throws DataAccessException {
+    protected <D> D query(String sqlStatement, Function<ResultSet, D> rsHandler, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement)) {
+            try (var ps = conn.prepareStatement(sqlStatement)) {
                 for (var i = 0; i < params.length; i++) {
                     // Universal logic for db queries
                     var param = params[i];
@@ -67,7 +68,7 @@ public abstract class BaseSQLDAO {
                 return rsHandler.apply(rs);
             }
         } catch (SQLException e) {
-            throw new DataAccessException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
+            throw new DataAccessException(500, String.format("unable to update database: %s, %s", sqlStatement, e.getMessage()));
         }
     }
 
