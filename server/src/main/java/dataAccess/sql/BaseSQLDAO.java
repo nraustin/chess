@@ -9,8 +9,7 @@ import static java.sql.Types.NULL;
 
 public abstract class BaseSQLDAO {
 
-    public BaseSQLDAO() throws DataAccessException {
-    }
+    public BaseSQLDAO() {}
 
     protected int executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {

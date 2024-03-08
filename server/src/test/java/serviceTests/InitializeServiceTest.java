@@ -45,7 +45,7 @@ public class InitializeServiceTest extends ServiceTest{
 
     }
 
-    void populateAuthDirectly(){
+    void populateAuthDirectly() throws DataAccessException {
         testAuthData = authDAO.createAuth("here for a good time");
 
         Assertions.assertEquals(testAuthData, authDAO.getAuth(testAuthData.authToken()));
