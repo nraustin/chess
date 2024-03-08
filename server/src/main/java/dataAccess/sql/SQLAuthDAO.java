@@ -28,9 +28,9 @@ public class SQLAuthDAO extends BaseSQLDAO implements AuthDAO {
     }
 
     public AuthData createAuth(String username) throws DataAccessException {
-        AuthData authToken = generateAuthToken(username);
+        AuthData authData = generateAuthToken(username);
         String statement = "INSERT INTO auth (username, authToken) VALUES (?, ?);";
-        executeUpdate(statement, username, authToken);
+        update(statement, username, authData.authToken());
         return null;
     }
 
@@ -43,7 +43,7 @@ public class SQLAuthDAO extends BaseSQLDAO implements AuthDAO {
     }
 
     public void clearData() throws DataAccessException {
-        executeUpdate("DELETE FROM auth;");
+        update("DELETE FROM auth;");
     }
 
 }

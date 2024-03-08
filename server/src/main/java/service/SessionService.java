@@ -16,7 +16,7 @@ public class SessionService extends Service {
         try{
             UserData targetUser = userDAO.getUser(user.username());
 
-            if(targetUser == null || !targetUser.password().equals(user.password())){
+            if(targetUser == null || !userDAO.verifyUser(targetUser.password(), user.password())){
                 throw new DataAccessException(401, "Error: unauthorized");
             }
 

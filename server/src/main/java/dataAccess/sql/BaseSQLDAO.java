@@ -2,7 +2,10 @@ package dataAccess.sql;
 
 import dataAccess.DatabaseManager;
 import dataAccess.exception.*;
+
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.function.Function;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
@@ -11,12 +14,15 @@ public abstract class BaseSQLDAO {
 
     public BaseSQLDAO() {}
 
-    protected int executeUpdate(String statement, Object... params) throws DataAccessException {
+    protected int update(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
                     // Universal logic for db updates
+                    System.out.println(ps);
                     var param = params[i];
+                    System.out.println(param);
+
                     if(param instanceof String p){
                         ps.setString(i + 1, p);
                     }
@@ -37,10 +43,40 @@ public abstract class BaseSQLDAO {
                 return 0;
             }
         } catch (SQLException e) {
-            System.out.println("hello from executeUpdate");
             throw new DataAccessException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
         }
     }
+
+    protected <D> D query(String statement, Function<ResultSet, D> rsHandler, Object... params) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                for (var i = 0; i < params.length; i++) {
+                    // Universal logic for queries
+                    var param = params[i];
+
+                    if(param instanceof String p){
+                        ps.setString(i + 1, p);
+                    }
+                    else if(param instanceof Integer p){
+                        ps.setInt(i+ 1, p);
+                    }
+                    else if(param == null){
+                        ps.setNull(i+ 1, NULL);
+                    }
+                }
+
+                var rs = ps.executeQuery();
+                if (rs.next()) {
+                    return rsHandler.apply(rs);
+                }
+
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
+        }
+    }
+
 
     protected void configureDatabase(String[] createTableStatements) throws DataAccessException {
         DatabaseManager.createDatabase();
