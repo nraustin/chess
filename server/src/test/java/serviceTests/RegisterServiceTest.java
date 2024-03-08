@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class RegisterServiceTest extends ServiceTest {
 
     @BeforeEach
-    void start(){
+    void start() throws DataAccessException {
         initializeDAOs();
     }
 

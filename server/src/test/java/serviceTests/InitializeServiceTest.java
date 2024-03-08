@@ -53,7 +53,7 @@ public class InitializeServiceTest extends ServiceTest{
         populatedAuth.add(testAuthData);
     }
 
-    void populateUsersDirectly(){
+    void populateUsersDirectly() throws DataAccessException {
         testUser = new UserData("u1", "p1", "e1");
 
         userDAO.createUser(testUser);

@@ -5,20 +5,28 @@ import dataAccess.exception.*;
 import java.sql.SQLException;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import static java.sql.Types.NULL;
 
 public abstract class BaseSQLDAO {
 
-    public BaseSQLDAO(){}
+    public BaseSQLDAO() throws DataAccessException {
+    }
 
-
-    private String[] createTableStatements;
-
-    // From petshop; adapt to chess
-    private int executeUpdate(String statement, Object... params) throws DataAccessException {
+    protected int executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
-                    // Universal logic for updates
+                    // Universal logic for db updates
+                    var param = params[i];
+                    if(param instanceof String p){
+                        ps.setString(i + 1, p);
+                    }
+                    else if(param instanceof Integer p){
+                        ps.setInt(i+ 1, p);
+                    }
+                    else if(param == null){
+                        ps.setNull(i+ 1, NULL);
+                    }
                 }
                 ps.executeUpdate();
 
@@ -30,12 +38,12 @@ public abstract class BaseSQLDAO {
                 return 0;
             }
         } catch (SQLException e) {
+            System.out.println("hello from executeUpdate");
             throw new DataAccessException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
         }
     }
 
-    // From petshop; may need to change for abstraction
-    private void configureDatabase() throws DataAccessException {
+    protected void configureDatabase(String[] createTableStatements) throws DataAccessException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
             for (var statement : createTableStatements) {

@@ -1,6 +1,7 @@
 package serviceTests;
 
 import dataAccess.*;
+import dataAccess.exception.DataAccessException;
 import service.Service;
 
 public abstract class ServiceTest {
@@ -15,7 +16,7 @@ public abstract class ServiceTest {
         authDAO = new MemoryAuthDAO();
     }
 
-    protected void initializeDAOs(){
+    protected void initializeDAOs() throws DataAccessException {
         userDAO.clearData();
         gameDAO.clearData();
         authDAO.clearData();

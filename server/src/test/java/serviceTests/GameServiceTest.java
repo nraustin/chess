@@ -19,7 +19,7 @@ public class GameServiceTest extends ServiceTest{
     private HashSet<GameData> populatedGames = new HashSet<>();
 
     @BeforeEach
-    void start(){
+    void start() throws DataAccessException {
         initializeDAOs();
         authToken = authDAO.createAuth("nick").authToken();
         populateGamesDirectly();
