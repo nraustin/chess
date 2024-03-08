@@ -19,9 +19,7 @@ public abstract class BaseSQLDAO {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
                     // Universal logic for db updates
-                    System.out.println(ps);
                     var param = params[i];
-                    System.out.println(param);
 
                     if(param instanceof String p){
                         ps.setString(i + 1, p);
@@ -37,6 +35,7 @@ public abstract class BaseSQLDAO {
 
                 var rs = ps.getGeneratedKeys();
                 if (rs.next()) {
+                    System.out.println(rs.getInt(1));
                     return rs.getInt(1);
                 }
 
@@ -49,9 +48,9 @@ public abstract class BaseSQLDAO {
 
     protected <D> D query(String statement, Function<ResultSet, D> rsHandler, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+            try (var ps = conn.prepareStatement(statement)) {
                 for (var i = 0; i < params.length; i++) {
-                    // Universal logic for queries
+                    // Universal logic for db queries
                     var param = params[i];
 
                     if(param instanceof String p){
@@ -64,13 +63,8 @@ public abstract class BaseSQLDAO {
                         ps.setNull(i+ 1, NULL);
                     }
                 }
-
                 var rs = ps.executeQuery();
-                if (rs.next()) {
-                    return rsHandler.apply(rs);
-                }
-
-                return null;
+                return rsHandler.apply(rs);
             }
         } catch (SQLException e) {
             throw new DataAccessException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));

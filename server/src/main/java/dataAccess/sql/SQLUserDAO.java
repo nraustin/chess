@@ -6,6 +6,7 @@ import model.UserData;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
 
 public class SQLUserDAO extends BaseSQLDAO implements UserDAO {
 
@@ -35,19 +36,24 @@ public class SQLUserDAO extends BaseSQLDAO implements UserDAO {
     }
 
     public UserData getUser(String username) throws DataAccessException {
-        String statement = "SELECT * FROM user WHERE username = ?;";
+        String statement = "SELECT * FROM user WHERE username = ?";
         UserData userData = query(statement,
                 resultSet -> {
                     try {
-                        return new UserData(resultSet.getString("username"),
-                                            resultSet.getString("password"),
-                                            resultSet.getString("email"));
+                        if(resultSet.next()){
+                            System.out.println(String.format("from getUserSQL rs %s", resultSet.getString("username")));
+
+                            return new UserData(resultSet.getString("username"),
+                                                resultSet.getString("password"),
+                                                resultSet.getString("email"));
+                        } else{
+                            return null;
+                        }
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
-                },
-                username);
-        System.out.println("hello from getUserSQL");
+                }, username);
+        System.out.println(String.format("from getUserSQL %s", username));
         return userData;
     }
 
