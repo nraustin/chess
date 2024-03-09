@@ -23,7 +23,7 @@ public class SQLGameDAO extends BaseSQLDAO implements GameDAO {
             `gameID` int NOT NULL AUTO_INCREMENT,
             `whiteUsername` varchar(128) DEFAULT NULL,
             `blackUsername` varchar(128) DEFAULT NULL,
-            `gameName` varchar(128) NOT NULL,
+            `gameName` varchar(128) NOT NULL UNIQUE,
             `game` longtext NOT NULL,
             PRIMARY KEY (gameID)
             )

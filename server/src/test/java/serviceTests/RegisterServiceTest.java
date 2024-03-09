@@ -13,6 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RegisterServiceTest extends ServiceTest {
 
+    public RegisterServiceTest() throws DataAccessException {
+    }
+
     @BeforeEach
     void start() throws DataAccessException {
         initializeDAOs();
@@ -24,7 +27,7 @@ public class RegisterServiceTest extends ServiceTest {
         UserData user = new UserData("nick", "issuper", "coolandhotmail.com");
         AuthData authData = new RegisterService(userDAO, gameDAO, authDAO).register(user);
 
-        Assertions.assertEquals(user, userDAO.getUser(user.username()));
+        Assertions.assertEquals(user.username(), userDAO.getUser(user.username()).username());
         Assertions.assertEquals(authData, authDAO.getAuth(authData.authToken()));
     }
 

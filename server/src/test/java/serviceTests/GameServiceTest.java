@@ -18,6 +18,9 @@ public class GameServiceTest extends ServiceTest{
     private String authToken;
     private HashSet<GameData> populatedGames = new HashSet<>();
 
+    public GameServiceTest() throws DataAccessException {
+    }
+
     @BeforeEach
     void start() throws DataAccessException {
         initializeDAOs();

@@ -2,6 +2,9 @@ package serviceTests;
 
 import dataAccess.*;
 import dataAccess.exception.DataAccessException;
+import dataAccess.sql.SQLAuthDAO;
+import dataAccess.sql.SQLGameDAO;
+import dataAccess.sql.SQLUserDAO;
 import service.Service;
 
 public abstract class ServiceTest {
@@ -10,10 +13,10 @@ public abstract class ServiceTest {
     protected final GameDAO gameDAO;
     protected final AuthDAO authDAO;
 
-    public ServiceTest(){
-        userDAO = new MemoryUserDAO();
-        gameDAO = new MemoryGameDAO();
-        authDAO = new MemoryAuthDAO();
+    public ServiceTest() throws DataAccessException {
+        userDAO = new SQLUserDAO();
+        gameDAO = new SQLGameDAO();
+        authDAO = new SQLAuthDAO();
     }
 
     protected void initializeDAOs() throws DataAccessException {

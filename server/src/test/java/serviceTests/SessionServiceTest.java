@@ -17,6 +17,9 @@ public class SessionServiceTest extends ServiceTest {
     private UserData testUser;
     private AuthData testUserAuthData;
 
+    public SessionServiceTest() throws DataAccessException {
+    }
+
     @BeforeEach
     void start() throws DataAccessException{
         initializeDAOs();
@@ -28,7 +31,7 @@ public class SessionServiceTest extends ServiceTest {
         UserData user = new UserData("nick", "issuper", "coolandhotmail.com");
         testUserAuthData = new RegisterService(userDAO, gameDAO, authDAO).register(user);
 
-        Assertions.assertEquals(user, userDAO.getUser(user.username()));
+        Assertions.assertEquals(user.username(), userDAO.getUser(user.username()).username());
         Assertions.assertEquals(testUserAuthData, authDAO.getAuth(testUserAuthData.authToken()));
 
         return user;

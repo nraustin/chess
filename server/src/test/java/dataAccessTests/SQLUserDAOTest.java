@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class SQLUserDAOTest extends SQLDAOTest{
 
     private UserData testUser;
+
     public SQLUserDAOTest() throws DataAccessException {
     }
 
@@ -36,8 +37,8 @@ public class SQLUserDAOTest extends SQLDAOTest{
         UserData copycat = new UserData(testUser.username(), "they call me", "Stacy");
 
         createUserPositive();
-
         DataAccessException thrown = assertThrows(DataAccessException.class, () -> userDAO.createUser(copycat));
+
         Assertions.assertEquals(e.getStatusCode(), thrown.getStatusCode());
         Assertions.assertEquals(e.getMessage(), thrown.getMessage());
 

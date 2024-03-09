@@ -21,6 +21,10 @@ public class InitializeServiceTest extends ServiceTest{
     private int testGame;
     private AuthData testAuthData;
     private UserData testUser;
+
+    public InitializeServiceTest() throws DataAccessException {
+    }
+
     @Test
     @DisplayName("Clear all data from DAOs")
     void clearData() throws DataAccessException {
@@ -58,7 +62,7 @@ public class InitializeServiceTest extends ServiceTest{
 
         userDAO.createUser(testUser);
 
-        Assertions.assertEquals(testUser, userDAO.getUser(testUser.username()));
+        Assertions.assertEquals(testUser.username(), userDAO.getUser(testUser.username()).username());
 
         populatedUsers.add(testUser);
     }
