@@ -108,7 +108,7 @@ public class SQLGameDAOTest extends  SQLDAOTest{
     void updateGamePositive() throws DataAccessException {
         int gameID = gameDAO.createGame(testGame.gameName());
 
-        GameData updatedGame = new GameData(gameID, "frisbee golf", null, "that's not my name", new ChessGame());
+        GameData updatedGame = new GameData(gameID, "frisbee golf", null, "game", new ChessGame());
         gameDAO.updateGame(updatedGame);
 
         Assertions.assertEquals(updatedGame.whiteUsername(), gameDAO.getGame(gameID).whiteUsername());

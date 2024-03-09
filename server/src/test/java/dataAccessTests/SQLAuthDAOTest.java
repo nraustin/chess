@@ -75,7 +75,7 @@ public class SQLAuthDAOTest extends SQLDAOTest{
     @DisplayName("Delete wrong authToken")
     void deleteAuthNegative() throws DataAccessException {
         AuthData toBeDeleted = authDAO.createAuth(testUser.username());
-        AuthData toNotBeDeleted = authDAO.createAuth("they call me Jane");
+        AuthData toNotBeDeleted = authDAO.createAuth("never delete never what");
 
         authDAO.deleteAuth(toBeDeleted);
 
