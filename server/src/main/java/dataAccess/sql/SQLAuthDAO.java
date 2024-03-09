@@ -24,7 +24,7 @@ public class SQLAuthDAO extends BaseSQLDAO implements AuthDAO {
             """
     };
 
-    private AuthData generateAuthToken(String username) {
+    public AuthData generateAuthToken(String username) {
         AuthData authData = new AuthData(UUID.randomUUID().toString(), username);
         return authData;
     }

@@ -33,7 +33,7 @@ public class SQLUserDAOTest extends SQLDAOTest{
     @DisplayName("Create a user with existing username")
     void createUserNegative() throws DataAccessException {
         DataAccessException e = new DataAccessException(500, "unable to update database: INSERT INTO user (username, password, email) VALUES (?, ?, ?), Duplicate entry 'nick' for key 'user.PRIMARY'");
-        UserData copycat = new UserData(testUser.username(), "they call me", "stacy");
+        UserData copycat = new UserData(testUser.username(), "they call me", "Stacy");
 
         createUserPositive();
 
@@ -70,7 +70,7 @@ public class SQLUserDAOTest extends SQLDAOTest{
     void verifyUserNegative() throws DataAccessException {
         DataAccessException e = new DataAccessException(401, "Error: unauthorized");
         createUserPositive();
-        UserData imposter = new UserData(testUser.username(), "they call me", "jane");
+        UserData imposter = new UserData(testUser.username(), "they call me", "her");
 
         Assertions.assertFalse(userDAO.verifyUser(userDAO.getUser(testUser.username()).username(), imposter.password()));
     }
