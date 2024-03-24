@@ -10,15 +10,21 @@ import java.util.Arrays;
 
 public class ChessClient {
 
+    private static ChessClient client;
     private final String serverURL;
-    private final ServerFacade server;
+    private ServerFacade server;
     private State state = State.LOGGEDOUT;
 
     public ChessClient(String serverURL){
         server = new ServerFacade(serverURL);
         this.serverURL = serverURL;
+        this.client = new ChessClient(serverURL);
     }
 
+    // I think this is alright? There should only be one client/state here
+    public static ChessClient getClient(){
+        return client;
+    }
 
     public String eval(String input){
         try{
@@ -27,7 +33,6 @@ public class ChessClient {
             String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
 
             switch(state) {
-                // Should these be static? No
                 case LOGGEDOUT -> {
                     return new PreLoginUI().eval(cmd, params);
                 }

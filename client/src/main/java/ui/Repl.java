@@ -14,7 +14,6 @@ public class Repl {
 
     public void run() {
         System.out.println(String.format("%s Welcome to Chess %s \n Please login or register to continue.", EscapeSequences.WHITE_QUEEN));
-        // Client help menu
 
         Scanner scanner = new Scanner(System.in);
         String res = "";
@@ -23,7 +22,7 @@ public class Repl {
             String line = scanner.nextLine();
 
             try{
-                // res = client.eval(line);
+                 res = client.eval(line);
                 System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + res);
             } catch (Exception e){
                 System.out.println(e.getMessage());
