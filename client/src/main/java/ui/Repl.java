@@ -13,16 +13,16 @@ public class Repl {
     }
 
     public void run() {
-        System.out.println(String.format("%s Welcome to Chess %s \n Please login or register to continue.", EscapeSequences.WHITE_QUEEN));
+        System.out.println(String.format("%s Welcome to Chess %s \n Please login or register to continue.", EscapeSequences.WHITE_QUEEN, EscapeSequences.WHITE_QUEEN));
 
         Scanner scanner = new Scanner(System.in);
         String res = "";
-        while(!res.equals("quit")){
+        while(!res.equals("Goodbye!")){
             printPrompt();
             String line = scanner.nextLine();
 
             try{
-                 res = client.eval(line);
+                res = client.eval(line);
                 System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + res);
             } catch (Exception e){
                 System.out.println(e.getMessage());
@@ -32,6 +32,6 @@ public class Repl {
     }
 
     private void printPrompt() {
-        System.out.println("\n" + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_WHITE + client.getState() + ">>>" + EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+        System.out.print("\n" + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_WHITE + client.getState() + ">>> " + EscapeSequences.SET_TEXT_COLOR_MAGENTA);
     }
 }

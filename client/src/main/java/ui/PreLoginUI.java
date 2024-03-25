@@ -1,51 +1,56 @@
 package ui;
 
 
+import exception.ResponseException;
 import model.UserData;
 import web.ChessClient;
 
 public class PreLoginUI implements UserInterface{
 
-    public String eval(String cmd, String[] params){
+    public String eval(String cmd, String[] params) throws ResponseException {
         switch(cmd){
-            case "help" -> {
-                return help();
-            }
             case "quit" -> {
-//                return quit();
+                return "Goodbye!";
             }
             case "login" -> {
-//                return login();
+                return login(params);
             }
             case "register" -> {
-//                return register();
+                return register(params);
             }
             default -> {
                 return help();
             }
         }
-        return "not implemented";
     }
 
     private String help() {
         String message =
         """
-        Commands:
-        Help: help
-        Quit: quit
-        Login: login <USERNAME> <PASSWORD>
-        Register: register <USERNAME> <PASSWORD> <EMAIL>
+        Login: 'login <USERNAME> <PASSWORD>'
+        Register: 'register <USERNAME> <PASSWORD> <EMAIL>'
+        Quit: 'quit'
+        Help: 'help'
         """;
 
         return message;
     }
 
-    private String login(String... params){
+    private String login(String... params) throws ResponseException {
         if(params.length != 2){
-//            throw new ResponseException(400, "Expected: login <USERNAME> <PASSWORD>");
+            throw new ResponseException(400, "Expected: login <USERNAME> <PASSWORD>");
         }
-//        ChessClient.getClient().getServer().login(new UserData(params[0], params[1], null));
+        ChessClient.getClient().getServer().login(new UserData(params[0], params[1], null));
         ChessClient.getClient().setState(State.LOGGEDIN);
         return String.format("Logged in as %s.", params[0]);
+    }
+
+    private String register(String ...params) throws ResponseException {
+        if(params.length != 3){
+            throw new ResponseException(400, "Expected: register <USERNAME> <PASSWORD> <EMAIL>");
+        }
+        ChessClient.getClient().getServer().register(new UserData(params[0], params[1], params[2]));
+        ChessClient.getClient().setState(State.LOGGEDIN);
+        return String.format("%s registered.", params[0]);
     }
 }

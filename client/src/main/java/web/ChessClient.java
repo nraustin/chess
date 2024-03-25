@@ -18,7 +18,7 @@ public class ChessClient {
     public ChessClient(String serverURL){
         server = new ServerFacade(serverURL);
         this.serverURL = serverURL;
-        this.client = new ChessClient(serverURL);
+        this.client = this;
     }
 
     // I think this is alright? There should only be one client/state here
