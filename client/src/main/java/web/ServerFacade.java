@@ -34,6 +34,10 @@ public class ServerFacade {
         authToken = authData.authToken();
     }
 
+    public void logout() throws ResponseException {
+        httpHandler("DELETE", "/session", null, null);
+    }
+
     private <T> T httpHandler(String method, String endpoint, Object request, Class<T> resClass) throws ResponseException {
         try {
             URL url = new URI(serverURL + endpoint).toURL();

@@ -1,5 +1,6 @@
 package web;
 
+import model.UserData;
 import ui.PreLoginUI;
 import ui.PostLoginUI;
 import ui.GameUI;
@@ -14,6 +15,7 @@ public class ChessClient {
     private final String serverURL;
     private ServerFacade server;
     private State state = State.LOGGEDOUT;
+    private static UserData userData;
 
     public ChessClient(String serverURL){
         server = new ServerFacade(serverURL);
@@ -74,6 +76,18 @@ public class ChessClient {
 
     public ServerFacade getServer(){
         return server;
+    }
+
+    public UserData getUser(){
+        return userData;
+    }
+
+    public void setUser(UserData userData){
+        this.userData = userData;
+    }
+
+    public void clearUser(){
+        this.userData = null;
     }
 
 

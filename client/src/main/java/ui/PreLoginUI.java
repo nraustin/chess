@@ -40,7 +40,10 @@ public class PreLoginUI implements UserInterface{
         if(params.length != 2){
             throw new ResponseException(400, "Expected: login <USERNAME> <PASSWORD>");
         }
-        ChessClient.getClient().getServer().login(new UserData(params[0], params[1], null));
+        UserData userData = new UserData(params[0], params[1], null);
+        ChessClient.getClient().getServer().login(userData);
+
+        ChessClient.getClient().setUser(userData);
         ChessClient.getClient().setState(State.LOGGEDIN);
         return String.format("Logged in as %s.", params[0]);
     }
@@ -49,7 +52,10 @@ public class PreLoginUI implements UserInterface{
         if(params.length != 3){
             throw new ResponseException(400, "Expected: register <USERNAME> <PASSWORD> <EMAIL>");
         }
-        ChessClient.getClient().getServer().register(new UserData(params[0], params[1], params[2]));
+        UserData userData = new UserData(params[0], params[1], params[2]);
+        ChessClient.getClient().getServer().register(userData);
+
+        ChessClient.getClient().setUser(userData);
         ChessClient.getClient().setState(State.LOGGEDIN);
         return String.format("%s registered.", params[0]);
     }
