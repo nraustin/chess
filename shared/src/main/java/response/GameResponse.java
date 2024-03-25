@@ -18,4 +18,12 @@ public class GameResponse extends Response {
         super(null);
         this.gameID = gameID;
     }
+
+    public HashSet<GameData> getGames(){
+        return games;
+    }
+
+    public int getGameID(){
+        return gameID;
+    }
 }

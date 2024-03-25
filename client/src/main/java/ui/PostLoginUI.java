@@ -2,6 +2,7 @@ package ui;
 
 import exception.ResponseException;
 import model.GameData;
+import response.GameResponse;
 import web.ChessClient;
 
 public class PostLoginUI implements UserInterface {
@@ -18,7 +19,7 @@ public class PostLoginUI implements UserInterface {
                 return createGame(params);
             }
             case "list" -> {
-//                return listGames();
+                return listGames();
             }
             case "join" -> {
 //                return joinGame();
@@ -61,9 +62,13 @@ public class PostLoginUI implements UserInterface {
         if(params.length != 1){
             throw new ResponseException(400, "Expected: create <GAME ID>");
         }
-        ChessClient.getClient().getServer().createGame(new GameData(1, null, null, params[0], null));
+        int gameID = ChessClient.getClient().getServer().createGame(new GameData(1, null, null, params[0], null));
 
-        return String.format("Game '%s' created", params[0]);
+        return String.format("Game '%s' created with ID: %s", params[0], gameID);
+    }
+
+    private String listGames(String ...params) throws ResponseException {
+        return ChessClient.getClient().getServer().listGames();
     }
 
 

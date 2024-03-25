@@ -11,8 +11,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.*;
+import java.util.HashSet;
 
 import exception.ResponseException;
+import ui.EscapeSequences;
 
 public class ServerFacade {
 
@@ -37,8 +39,34 @@ public class ServerFacade {
         httpHandler("DELETE", "/session", null, null);
     }
 
-    public void createGame(GameData gameData) throws ResponseException {
-        httpHandler("POST", "/game", gameData, GameResponse.class);
+    public int createGame(GameData gameData) throws ResponseException {
+        GameResponse gameRes = httpHandler("POST", "/game", gameData, GameResponse.class);
+        return gameRes.getGameID();
+    }
+
+    public String listGames() throws ResponseException {
+        GameResponse gameRes = httpHandler("GET", "/game", null, GameResponse.class);
+        return gamesToString(gameRes);
+    }
+
+    public String gamesToString(GameResponse gameRes){
+        StringBuilder s = new StringBuilder();
+        s.append("ALL GAMES:\n");
+        for (GameData game: gameRes.getGames()){
+            String gameListing =
+                    String.format(
+                            """
+                            \n %s
+                            %s Players (white, black): %s, %s
+                             Game ID: %s
+                            """, EscapeSequences.SET_TEXT_COLOR_BLUE + game.gameName(),
+                                 EscapeSequences.SET_TEXT_COLOR_GREEN,
+                                (game.whiteUsername() == null ? "None yet" : game.whiteUsername()),
+                                (game.blackUsername() == null ? "None yet" : game.blackUsername()),
+                                 game.gameID());
+            s.append(gameListing);
+        }
+        return s.toString();
     }
 
     private <T> T httpHandler(String method, String endpoint, Object request, Class<T> resClass) throws ResponseException {

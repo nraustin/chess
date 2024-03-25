@@ -32,6 +32,6 @@ public class Repl {
     }
 
     private void printPrompt() {
-        System.out.print("\n" + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_WHITE + client.getState() + ">>> " + EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+        System.out.print("\n" + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_WHITE + client.getState() + " >>> " + EscapeSequences.SET_TEXT_COLOR_MAGENTA);
     }
 }
