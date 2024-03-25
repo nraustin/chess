@@ -1,5 +1,6 @@
 package web;
 
+import model.GameData;
 import model.UserData;
 import ui.PreLoginUI;
 import ui.PostLoginUI;
@@ -8,6 +9,7 @@ import ui.State;
 
 
 import java.util.Arrays;
+import java.util.HashSet;
 
 public class ChessClient {
 
@@ -16,6 +18,7 @@ public class ChessClient {
     private ServerFacade server;
     private State state = State.LOGGEDOUT;
     private static UserData userData;
+    private HashSet<GameData> clientGames;
 
     public ChessClient(String serverURL){
         server = new ServerFacade(serverURL);

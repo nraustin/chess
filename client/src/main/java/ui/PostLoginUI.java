@@ -2,6 +2,7 @@ package ui;
 
 import exception.ResponseException;
 import model.GameData;
+import request.JoinGameRequest;
 import response.GameResponse;
 import web.ChessClient;
 
@@ -22,16 +23,16 @@ public class PostLoginUI implements UserInterface {
                 return listGames();
             }
             case "join" -> {
-//                return joinGame();
+                return joinGame(params);
             }
             case "observe" -> {
-//                return observeGame();
+                return observeGame(params);
             }
             default -> {
                 return help();
             }
         }
-        return "not implemented";
+//        return "not implemented";
     }
 
     private String help() {
@@ -39,7 +40,7 @@ public class PostLoginUI implements UserInterface {
         """
         Create a game: 'create <GAME NAME>'
         Show games: 'list'
-        Join a game: 'join <GAME ID>'
+        Join a game: 'join <GAME ID> <WHITE|BLACK|empty>'
         Observe a game: 'observe <GAME ID>'
         Logout: 'logout'
         Quit: 'quit'
@@ -69,6 +70,24 @@ public class PostLoginUI implements UserInterface {
 
     private String listGames(String ...params) throws ResponseException {
         return ChessClient.getClient().getServer().listGames();
+    }
+
+    private String joinGame(String ...params) throws ResponseException {
+        if(params.length != 2){
+            throw new ResponseException(400, "Expected: join <GAME ID> <WHITE|BLACK|empty>");
+        }
+        ChessClient.getClient().getServer().joinGame(new JoinGameRequest(params[1].toUpperCase(), Integer.parseInt(params[0])));
+
+        return String.format("%s joined game %s", ChessClient.getClient().getUser().username(), params[0]);
+    }
+
+    private String observeGame(String ...params) throws ResponseException {
+        if (params.length != 1){
+            throw new ResponseException(400, "Expected: observe <GAME ID>");
+        }
+        ChessClient.getClient().getServer().joinGame(new JoinGameRequest(null, Integer.parseInt(params[0])));
+
+        return String.format("%s is observing game %s", ChessClient.getClient().getUser().username(), params[0]);
     }
 
 

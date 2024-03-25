@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import request.JoinGameRequest;
 import response.*;
 
 import java.io.IOException;
@@ -49,6 +50,11 @@ public class ServerFacade {
         return gamesToString(gameRes);
     }
 
+    public void joinGame(JoinGameRequest joinRequest) throws ResponseException {
+        httpHandler("PUT", "/game", joinRequest, null);
+    }
+
+
     public String gamesToString(GameResponse gameRes){
         StringBuilder s = new StringBuilder();
         s.append("ALL GAMES:\n");
@@ -61,8 +67,8 @@ public class ServerFacade {
                              Game ID: %s
                             """, EscapeSequences.SET_TEXT_COLOR_BLUE + game.gameName(),
                                  EscapeSequences.SET_TEXT_COLOR_GREEN,
-                                (game.whiteUsername() == null ? "None yet" : game.whiteUsername()),
-                                (game.blackUsername() == null ? "None yet" : game.blackUsername()),
+                                (game.whiteUsername() == null ? "No player" : game.whiteUsername()),
+                                (game.blackUsername() == null ? "No player" : game.blackUsername()),
                                  game.gameID());
             s.append(gameListing);
         }
