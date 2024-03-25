@@ -2,16 +2,15 @@ package web;
 
 import com.google.gson.Gson;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
-import ui.EscapeSequences;
+import response.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.*;
-import java.util.Objects;
-import java.util.Scanner;
 
 import exception.ResponseException;
 
@@ -38,12 +37,16 @@ public class ServerFacade {
         httpHandler("DELETE", "/session", null, null);
     }
 
+    public void createGame(GameData gameData) throws ResponseException {
+        httpHandler("POST", "/game", gameData, GameResponse.class);
+    }
+
     private <T> T httpHandler(String method, String endpoint, Object request, Class<T> resClass) throws ResponseException {
         try {
             URL url = new URI(serverURL + endpoint).toURL();
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(method);
-            connection.setDoOutput(request == null ? false : true);
+            connection.setDoOutput(request != null);
 
             if(authToken != null){
                 connection.addRequestProperty("Authorization", authToken);

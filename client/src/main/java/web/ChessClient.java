@@ -45,7 +45,7 @@ public class ChessClient {
                     return new GameUI().eval(cmd, params);
                 }
                 default -> {
-                    return "TODO:help";
+                    return "Error: state unknown";
                 }
             }
         } catch (Exception e) {
