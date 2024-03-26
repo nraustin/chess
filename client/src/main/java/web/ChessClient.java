@@ -1,5 +1,6 @@
 package web;
 
+import chess.ChessGame;
 import model.GameData;
 import model.UserData;
 import ui.PreLoginUI;
@@ -18,6 +19,7 @@ public class ChessClient {
     private ServerFacade server;
     private State state = State.LOGGEDOUT;
     private static UserData userData;
+    private ChessGame game;
     private HashSet<GameData> clientGames;
 
     public ChessClient(String serverURL){
@@ -91,6 +93,14 @@ public class ChessClient {
 
     public void clearUser(){
         this.userData = null;
+    }
+
+    public void setCurrentGame(ChessGame game){
+        this.game = game;
+    }
+
+    public ChessGame getCurrentGame(){
+        return game;
     }
 
 

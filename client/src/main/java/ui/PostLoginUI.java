@@ -29,10 +29,10 @@ public class PostLoginUI implements UserInterface {
                 return observeGame(params);
             }
             default -> {
-                return help();
+//                return help();
+                return observeGame("22025");
             }
         }
-//        return "not implemented";
     }
 
     private String help() {
@@ -78,6 +78,7 @@ public class PostLoginUI implements UserInterface {
         }
         ChessClient.getClient().getServer().joinGame(new JoinGameRequest(params[1].toUpperCase(), Integer.parseInt(params[0])));
 
+        ChessClient.getClient().setState(State.GAMEPLAY);
         return String.format("%s joined game %s", ChessClient.getClient().getUser().username(), params[0]);
     }
 
@@ -87,6 +88,7 @@ public class PostLoginUI implements UserInterface {
         }
         ChessClient.getClient().getServer().joinGame(new JoinGameRequest(null, Integer.parseInt(params[0])));
 
+        ChessClient.getClient().setState(State.GAMEPLAY);
         return String.format("%s is observing game %s", ChessClient.getClient().getUser().username(), params[0]);
     }
 

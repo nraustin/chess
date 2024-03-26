@@ -20,7 +20,6 @@ public class Repl {
         while(!res.equals("Goodbye!")){
             printPrompt();
             String line = scanner.nextLine();
-
             try{
                 res = client.eval(line);
                 System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + res);
