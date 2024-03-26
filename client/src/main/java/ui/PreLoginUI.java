@@ -45,7 +45,7 @@ public class PreLoginUI implements UserInterface{
 
         ChessClient.getClient().setUser(userData);
         ChessClient.getClient().setState(State.LOGGEDIN);
-        return String.format("Logged in as %s.", params[0]);
+        return String.format("Logged in as %s", params[0]);
     }
 
     private String register(String ...params) throws ResponseException {
@@ -57,6 +57,6 @@ public class PreLoginUI implements UserInterface{
 
         ChessClient.getClient().setUser(userData);
         ChessClient.getClient().setState(State.LOGGEDIN);
-        return String.format("%s registered.", params[0]);
+        return String.format("%s registered", params[0]);
     }
 }

@@ -41,7 +41,7 @@ public class InitializeServiceTest extends ServiceTest{
     }
 
     void populateGamesDirectly() throws DataAccessException {
-        testGame = gameDAO.createGame("Chess is fun");
+        testGame = gameDAO.createGame("Chess is fun").gameID();
 
         Assertions.assertEquals(testGame, gameDAO.getGame(testGame).gameID());
 

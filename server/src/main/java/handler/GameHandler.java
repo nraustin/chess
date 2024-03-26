@@ -41,8 +41,8 @@ public class GameHandler extends BaseHandler{
     }
 
     public Object createGameService(GameData newGame, GameService service, Request req) throws DataAccessException {
-        Integer gameID = service.createGame(newGame.gameName(), req.headers("Authorization"));
-        GameResponse createGameResponse = new GameResponse(gameID);
+        GameData game = service.createGame(newGame.gameName(), req.headers("Authorization"));
+        GameResponse createGameResponse = new GameResponse(game);
 
         return createGameResponse;
     }

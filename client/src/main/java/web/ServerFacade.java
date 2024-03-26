@@ -2,6 +2,7 @@ package web;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import exception.DataAccessException;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -54,12 +55,15 @@ public class ServerFacade {
 
     public int createGame(GameData gameData) throws ResponseException {
         GameResponse gameRes = httpHandler("POST", "/game", gameData, GameResponse.class);
+        ChessClient.getClient().addGame(gameRes.getGame());
+
         return gameRes.getGameID();
     }
 
     public String listGames() throws ResponseException {
         GameResponse gameRes = httpHandler("GET", "/game", null, GameResponse.class);
         assignGameIndexes(gameRes);
+
         return gamesToString();
     }
 
@@ -80,10 +84,11 @@ public class ServerFacade {
             return "No current games.";
         }
         s.append("ALL GAMES:\n");
-        gameMap.keySet().stream().sorted().forEach(key -> {
-            GameData game = gameMap.get(key);
+        for(Map.Entry<Integer, GameData> entry : gameMap.entrySet()){
+            Integer key = entry.getKey();
+            GameData game = entry.getValue();
             String gameListing =
-                    String.format(
+                String.format(
                     """
                     \n %s
                     %s Players (%swhite, %sblack%s): %s, %s
@@ -95,13 +100,15 @@ public class ServerFacade {
                     (EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY + (game.blackUsername() == null ? EscapeSequences.SET_TEXT_COLOR_GREEN + "No player" : game.blackUsername())),
                     EscapeSequences.SET_TEXT_COLOR_BLUE, key);
             s.append(gameListing);
-        });
+        }
+
         return s.toString();
     }
 
     private void assignGameIndexes(GameResponse gameRes){
         Map<Integer, GameData> gameIndexes = new HashMap<>();
         HashSet<GameData> games = gameRes.getGames();
+
         int i = 1;
         for(GameData game: games){
             gameIndexes.put(i, game);
@@ -110,6 +117,7 @@ public class ServerFacade {
         ChessClient.getClient().setCurrentGames(gameIndexes);
     }
 
+
     private <T> T httpHandler(String method, String endpoint, Object request, Class<T> resClass) throws ResponseException {
         try {
             URL url = new URI(serverURL + endpoint).toURL();
@@ -117,11 +125,11 @@ public class ServerFacade {
             connection.setRequestMethod(method);
             connection.setDoOutput(request != null);
 
-            if(authToken != null){
+            if (authToken != null) {
                 connection.addRequestProperty("Authorization", authToken);
             }
 
-            if(request != null){
+            if (request != null) {
                 connection.addRequestProperty("Content-Type", "application/json");
                 OutputStream os = connection.getOutputStream();
                 writeReqBody(os, request);
@@ -130,11 +138,13 @@ public class ServerFacade {
             connection.connect();
 
             int status = connection.getResponseCode();
-            if(status != 200){
+            if (status != 200) {
                 throw new ResponseException(status, String.format("Failure: %s: %s", status, connection.getResponseMessage()));
             }
 
             return readResBody(connection, resClass);
+        } catch (ResponseException e){
+            throw new ResponseException(e.getStatusCode(), e.getMessage());
         } catch (Exception e){
             throw new ResponseException(500, e.getMessage());
         }

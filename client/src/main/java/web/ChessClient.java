@@ -1,6 +1,7 @@
 package web;
 
 import chess.ChessGame;
+import exception.ResponseException;
 import model.GameData;
 import model.UserData;
 import ui.PreLoginUI;
@@ -10,7 +11,7 @@ import ui.State;
 
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ChessClient {
@@ -20,8 +21,7 @@ public class ChessClient {
     private ServerFacade server;
     private State state = State.LOGGEDOUT;
     private static UserData userData;
-    private ChessGame game;
-    private Map<Integer, GameData> clientGames;
+    private Map<Integer, GameData> clientGames = new HashMap<>();
 
     public ChessClient(String serverURL){
         server = new ServerFacade(serverURL);
@@ -44,6 +44,7 @@ public class ChessClient {
                     return new PreLoginUI().eval(cmd, params);
                 }
                 case LOGGEDIN -> {
+                    server.listGames();
                     return new PostLoginUI().eval(cmd, params);
                 }
                 case GAMEPLAY -> {
@@ -56,10 +57,6 @@ public class ChessClient {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void setState(State state){
-        this.state = state;
     }
 
     public String getState(){
@@ -77,6 +74,10 @@ public class ChessClient {
                 return "Error: state unknown";
             }
         }
+    }
+
+    public void setState(State state){
+        this.state = state;
     }
 
     public ServerFacade getServer(){
@@ -101,6 +102,11 @@ public class ChessClient {
 
     public Map<Integer, GameData> getCurrentGames(){
         return clientGames;
+    }
+
+    public void addGame(GameData gameData){
+        int key = clientGames.isEmpty() ? 1 : clientGames.size() + 1;
+        clientGames.put(key, gameData);
     }
 
 

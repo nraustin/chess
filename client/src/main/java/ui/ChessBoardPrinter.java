@@ -14,6 +14,7 @@ public class ChessBoardPrinter {
         StringBuilder s = new StringBuilder();
 
         s.append(EscapeSequences.CLEAR_FORMAT).append("\n");
+        s.append("      ").append(color == ChessGame.TeamColor.WHITE ? "White team perspective" : "Black team perspective").append("\n");
         columnLabelPrinter(s, color);
         s.append("   \n");
 
@@ -27,7 +28,7 @@ public class ChessBoardPrinter {
         for(int row = rowStart; rowEnd == 0 ? row > rowEnd : row < rowEnd; row += rowIncrement) {
             s.append(" ").append(row).append(" ");
             for(int col = colStart; rowEnd == 0 ? col < 9: col > 0; col += colIncrement){
-                s.append((col + row) % 2 == 0 ? EscapeSequences.SET_BG_COLOR_DARK_GREY : EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+                s.append((col + row) % 2 == 0 ? EscapeSequences.SET_BG_COLOR_GREY : EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
                 ChessPosition position = new ChessPosition(row, col);
                 if(board.getPiece(position) != null){
                     // should refactor

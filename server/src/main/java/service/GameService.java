@@ -30,7 +30,7 @@ public class GameService extends Service{
         }
     }
 
-    public Integer createGame(String gameName, String authToken) throws DataAccessException {
+    public GameData createGame(String gameName, String authToken) throws DataAccessException {
         try{
             if(authDAO.getAuth(authToken) == null){
                 throw new DataAccessException(401, "Error: unauthorized");

@@ -62,11 +62,11 @@ public class PostLoginUI implements UserInterface {
 
     private String createGame(String ...params) throws ResponseException {
         if(params.length != 1){
-            throw new ResponseException(400, "Expected: create <GAME ID>");
+            throw new ResponseException(400, "Expected: create <GAME NAME>");
         }
-        int gameID = ChessClient.getClient().getServer().createGame(new GameData(1, null, null, params[0], null));
+        ChessClient.getClient().getServer().createGame(new GameData(1, null, null, params[0], null));
 
-        return String.format("Game '%s' created with ID: %s", params[0], gameID);
+        return String.format("Game '%s' created", params[0]);
     }
 
     private String listGames(String ...params) throws ResponseException {
@@ -79,8 +79,9 @@ public class PostLoginUI implements UserInterface {
         }
         Map<Integer, GameData> currentGames = ChessClient.getClient().getCurrentGames();
         Integer gameID = currentGames.get(Integer.parseInt(params[0])).gameID();
+        String color = params[1].toUpperCase().equals("EMPTY") ? null : params[1].toUpperCase();
 
-        ChessClient.getClient().getServer().joinGame(new JoinGameRequest(params[1].toUpperCase(), gameID));
+        ChessClient.getClient().getServer().joinGame(new JoinGameRequest(color, gameID));
 
         ChessClient.getClient().setState(State.GAMEPLAY);
         return String.format("%s joined game %s", ChessClient.getClient().getUser().username(), params[0]);
@@ -90,10 +91,14 @@ public class PostLoginUI implements UserInterface {
         if (params.length != 1){
             throw new ResponseException(400, "Expected: observe <GAME ID>");
         }
-        ChessClient.getClient().getServer().joinGame(new JoinGameRequest(null, Integer.parseInt(params[0])));
+        Map<Integer, GameData> currentGames = ChessClient.getClient().getCurrentGames();
+        Integer gameID = currentGames.get(Integer.parseInt(params[0])).gameID();
+        String gameName = currentGames.get(Integer.parseInt(params[0])).gameName();
+
+        ChessClient.getClient().getServer().joinGame(new JoinGameRequest(null, gameID));
 
         ChessClient.getClient().setState(State.GAMEPLAY);
-        return String.format("%s is observing game %s", ChessClient.getClient().getUser().username(), params[0]);
+        return String.format("%s is observing game '%s'", ChessClient.getClient().getUser().username(), gameName);
     }
 
 

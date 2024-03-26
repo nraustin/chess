@@ -11,11 +11,11 @@ public class MemoryGameDAO implements GameDAO{
 
     private final HashSet<GameData> gameDB = new HashSet<>();
 
-    public Integer createGame(String gameName) {
+    public GameData createGame(String gameName) {
         GameData game = new GameData(new Random().nextInt(42069), null, null, gameName, new ChessGame());
         gameDB.add(game);
 
-        return game.gameID();
+        return game;
     }
 
     public GameData getGame(int gameID) {

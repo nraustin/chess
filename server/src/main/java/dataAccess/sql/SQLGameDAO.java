@@ -30,11 +30,11 @@ public class SQLGameDAO extends BaseSQLDAO implements GameDAO {
             """
     };
 
-    public Integer createGame(String gameName) throws DataAccessException {
+    public GameData createGame(String gameName) throws DataAccessException {
         int gameID = new Random().nextInt(42069);
         String sqlStatement = "INSERT INTO game (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
         update(sqlStatement, gameID, null, null, gameName, new Gson().toJson(new ChessGame()));
-        return gameID;
+        return new GameData(gameID, null, null, gameName, new ChessGame());
     }
 
     public GameData getGame(int gameID) throws DataAccessException {

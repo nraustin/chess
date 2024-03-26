@@ -37,7 +37,7 @@ public class SQLGameDAOTest extends  SQLDAOTest{
     @Test
     @DisplayName("Properly create a game")
     void createGamePositive() throws DataAccessException {
-        int gameID = gameDAO.createGame(testGame.gameName());
+        int gameID = gameDAO.createGame(testGame.gameName()).gameID();
 
         Assertions.assertEquals(gameID, gameDAO.getGame(gameID).gameID());
     }
@@ -57,7 +57,7 @@ public class SQLGameDAOTest extends  SQLDAOTest{
     @Test
     @DisplayName("Properly retrieve a game")
     void getGamePositive() throws DataAccessException {
-        int gameID = gameDAO.createGame(testGame.gameName());
+        int gameID = gameDAO.createGame(testGame.gameName()).gameID();
 
         Assertions.assertEquals(testGame.gameName(), gameDAO.getGame(gameID).gameName());
     }
@@ -76,9 +76,9 @@ public class SQLGameDAOTest extends  SQLDAOTest{
     void listGamesPositive() throws DataAccessException {
         HashSet<Integer> gameIDs = new HashSet<>();
 
-        int game1 = gameDAO.createGame("they call me Stacy");
-        int game2 = gameDAO.createGame("they call me her");
-        int game3 = gameDAO.createGame("they call me Jane");
+        int game1 = gameDAO.createGame("they call me Stacy").gameID();
+        int game2 = gameDAO.createGame("they call me her").gameID();
+        int game3 = gameDAO.createGame("they call me Jane").gameID();
 
         gameIDs.add(game1);
         gameIDs.add(game2);
@@ -106,7 +106,7 @@ public class SQLGameDAOTest extends  SQLDAOTest{
     @Test
     @DisplayName("Properly update a game with a new player")
     void updateGamePositive() throws DataAccessException {
-        int gameID = gameDAO.createGame(testGame.gameName());
+        int gameID = gameDAO.createGame(testGame.gameName()).gameID();
 
         GameData updatedGame = new GameData(gameID, "frisbee golf", null, "game", new ChessGame());
         gameDAO.updateGame(updatedGame);
@@ -117,7 +117,7 @@ public class SQLGameDAOTest extends  SQLDAOTest{
     @Test
     @DisplayName("Update a game with no changes")
     void updateGameNegative() throws DataAccessException {
-        int gameID = gameDAO.createGame(testGame.gameName());
+        int gameID = gameDAO.createGame(testGame.gameName()).gameID();
         GameData game = gameDAO.getGame(gameID);
 
         gameDAO.updateGame(game);
@@ -128,7 +128,7 @@ public class SQLGameDAOTest extends  SQLDAOTest{
     @Test
     @DisplayName("Clear game table")
     void clearGamePositive() throws DataAccessException {
-        int gameID = gameDAO.createGame(testGame.gameName());
+        int gameID = gameDAO.createGame(testGame.gameName()).gameID();
         gameDAO.clearData();
 
         Assertions.assertNull(gameDAO.getGame(gameID));

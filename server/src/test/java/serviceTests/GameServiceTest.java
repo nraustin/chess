@@ -30,17 +30,17 @@ public class GameServiceTest extends ServiceTest{
 
     @DisplayName("Populate games for game service tests")
     void populateGamesDirectly() throws DataAccessException {
-        int g1 = gameDAO.createGame("Chess is fun");
-        int g2 = gameDAO.createGame("except");
-        int g3 = gameDAO.createGame("for when it's testing time");
+        GameData g1 = gameDAO.createGame("Chess is fun");
+        GameData g2 = gameDAO.createGame("except");
+        GameData g3 = gameDAO.createGame("for when it's testing time");
 
-        Assertions.assertEquals(g1, gameDAO.getGame(g1).gameID());
-        Assertions.assertEquals(g2, gameDAO.getGame(g2).gameID());
-        Assertions.assertEquals(g3, gameDAO.getGame(g3).gameID());
+        Assertions.assertEquals(g1.gameID(), gameDAO.getGame(g1.gameID()).gameID());
+        Assertions.assertEquals(g2.gameID(), gameDAO.getGame(g2.gameID()).gameID());
+        Assertions.assertEquals(g3.gameID(), gameDAO.getGame(g3.gameID()).gameID());
 
-        populatedGames.add(gameDAO.getGame(g1));
-        populatedGames.add(gameDAO.getGame(g2));
-        populatedGames.add(gameDAO.getGame(g3));
+        populatedGames.add(gameDAO.getGame(g1.gameID()));
+        populatedGames.add(gameDAO.getGame(g2.gameID()));
+        populatedGames.add(gameDAO.getGame(g3.gameID()));
     }
 
     @Test
@@ -66,9 +66,9 @@ public class GameServiceTest extends ServiceTest{
     @Test
     @DisplayName("Properly create a new game")
     void createGamePositive() throws DataAccessException {
-        int gameID = new GameService(userDAO, gameDAO, authDAO).createGame("A good game", authToken);
+        GameData game = new GameService(userDAO, gameDAO, authDAO).createGame("A good game", authToken);
 
-        Assertions.assertEquals(gameID, gameDAO.getGame(gameID).gameID());
+        Assertions.assertEquals(game.gameID(), gameDAO.getGame(game.gameID()).gameID());
     }
 
     @Test
@@ -90,7 +90,7 @@ public class GameServiceTest extends ServiceTest{
     @Test
     @DisplayName("Properly join a game")
     void joinGamePositive() throws DataAccessException{
-        int newGameID = gameDAO.createGame("A good game");
+        int newGameID = gameDAO.createGame("A good game").gameID();
 
         new GameService(userDAO, gameDAO, authDAO).joinGame(newGameID, "WHITE", authToken);
 
@@ -113,7 +113,7 @@ public class GameServiceTest extends ServiceTest{
 
         DataAccessException badRequest = assertThrows(DataAccessException.class, () -> new GameService(userDAO, gameDAO, authDAO).joinGame(-42069, "WHITE", authToken), "Should not join nonexistent game");
 
-        int newGameID = gameDAO.createGame("A game");
+        int newGameID = gameDAO.createGame("A game").gameID();
         new GameService(userDAO, gameDAO, authDAO).joinGame(newGameID, "WHITE", authToken);
         AuthData newPlayerData = authDAO.createAuth("A new player");
 

@@ -17,6 +17,7 @@ public class ServerFacadeTests {
 
     private static Server server;
     private static ServerFacade serverFacade;
+    private static ChessClient client;
 
     private static String serverURL;
 
@@ -28,7 +29,8 @@ public class ServerFacadeTests {
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
         serverURL = String.format("http://localhost:%d", port);
-        serverFacade = new ServerFacade(serverURL);
+        client = new ChessClient(serverURL);
+        serverFacade = client.getServer();
     }
 
     @BeforeEach
@@ -102,24 +104,22 @@ public class ServerFacadeTests {
 
     @Test
     public void listGamesPositive() throws ResponseException {
-        ChessClient client = new ChessClient(serverURL);
         UserData userData = new UserData("nick", "issleepdeprived", "yeah");
-        Assertions.assertDoesNotThrow(() -> client.getServer().register(userData));
+        Assertions.assertDoesNotThrow(() -> serverFacade.register(userData));
 
         GameData gameData = new GameData(42, null, null, "ggnore", null);
-        client.getServer().createGame(gameData);
-        Assertions.assertDoesNotThrow(() -> client.getServer().listGames());
+        serverFacade.createGame(gameData);
+        Assertions.assertDoesNotThrow(() -> serverFacade.listGames());
 
         Assertions.assertNotNull(client.getCurrentGames());
     }
 
     @Test
     public void listGameNegative(){
-        ChessClient client = new ChessClient(serverURL);
         UserData userData = new UserData("nick", "issleepdeprived", "yeah");
-        Assertions.assertDoesNotThrow(() -> client.getServer().register(userData));
+        Assertions.assertDoesNotThrow(() -> serverFacade.register(userData));
 
-        Assertions.assertDoesNotThrow(() -> client.getServer().listGames());
+        Assertions.assertDoesNotThrow(() -> serverFacade.listGames());
 
         Assertions.assertTrue(client.getCurrentGames().isEmpty());
     }
