@@ -11,6 +11,7 @@ import ui.State;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 
 public class ChessClient {
 
@@ -20,7 +21,7 @@ public class ChessClient {
     private State state = State.LOGGEDOUT;
     private static UserData userData;
     private ChessGame game;
-    private HashSet<GameData> clientGames;
+    private Map<Integer, GameData> clientGames;
 
     public ChessClient(String serverURL){
         server = new ServerFacade(serverURL);
@@ -28,7 +29,6 @@ public class ChessClient {
         this.client = this;
     }
 
-    // I think this is alright? There should only be one client/state here
     public static ChessClient getClient(){
         return client;
     }
@@ -95,12 +95,12 @@ public class ChessClient {
         this.userData = null;
     }
 
-    public void setCurrentGame(ChessGame game){
-        this.game = game;
+    public void setCurrentGames(Map<Integer, GameData> games){
+        this.clientGames = games;
     }
 
-    public ChessGame getCurrentGame(){
-        return game;
+    public Map<Integer, GameData> getCurrentGames(){
+        return clientGames;
     }
 
 

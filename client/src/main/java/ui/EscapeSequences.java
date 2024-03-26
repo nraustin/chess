@@ -63,7 +63,7 @@ public class EscapeSequences {
     public static final String BLACK_KNIGHT = " ♞ ";
     public static final String BLACK_ROOK = " ♜ ";
     public static final String BLACK_PAWN = " ♟ ";
-    public static final String EMPTY = " \u2003 ";
+    public static final String EMPTY = "\u2002\u2003\u2004\u2005\u200A"; // the magical combo
     public static final String CLEAR_FORMAT = "\u001B" + "[0m";
 
     public static String moveCursorToLocation(int x, int y) { return UNICODE_ESCAPE + "[" + y + ";" + x + "H"; }

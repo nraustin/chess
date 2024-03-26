@@ -1,5 +1,6 @@
 package web;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
@@ -12,7 +13,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.*;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import exception.ResponseException;
 import ui.EscapeSequences;
@@ -24,6 +27,14 @@ public class ServerFacade {
 
     public ServerFacade(String serverURL){
         this.serverURL = serverURL;
+    }
+
+    public String getAuthToken(){
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken){
+        this.authToken = authToken;
     }
 
     public void login(UserData userData) throws ResponseException {
@@ -38,6 +49,7 @@ public class ServerFacade {
 
     public void logout() throws ResponseException {
         httpHandler("DELETE", "/session", null, null);
+        authToken = null;
     }
 
     public int createGame(GameData gameData) throws ResponseException {
@@ -47,32 +59,55 @@ public class ServerFacade {
 
     public String listGames() throws ResponseException {
         GameResponse gameRes = httpHandler("GET", "/game", null, GameResponse.class);
-        return gamesToString(gameRes);
+        assignGameIndexes(gameRes);
+        return gamesToString();
     }
 
     public void joinGame(JoinGameRequest joinRequest) throws ResponseException {
         httpHandler("PUT", "/game", joinRequest, null);
     }
 
+    public void clearData() throws ResponseException {
+        httpHandler("DELETE", "/db", null, null);
+    }
 
-    public String gamesToString(GameResponse gameRes){
+
+    private String gamesToString(){
         StringBuilder s = new StringBuilder();
+        Map<Integer, GameData> gameMap = ChessClient.getClient().getCurrentGames();
+
+        if(gameMap.isEmpty()){
+            return "No current games.";
+        }
         s.append("ALL GAMES:\n");
-        for (GameData game: gameRes.getGames()){
+        gameMap.keySet().stream().sorted().forEach(key -> {
+            GameData game = gameMap.get(key);
             String gameListing =
                     String.format(
-                            """
-                            \n %s
-                            %s Players (white, black): %s, %s
-                             Game ID: %s
-                            """, EscapeSequences.SET_TEXT_COLOR_BLUE + game.gameName(),
-                                 EscapeSequences.SET_TEXT_COLOR_GREEN,
-                                (game.whiteUsername() == null ? "No player" : game.whiteUsername()),
-                                (game.blackUsername() == null ? "No player" : game.blackUsername()),
-                                 game.gameID());
+                    """
+                    \n %s
+                    %s Players (%swhite, %sblack%s): %s, %s
+                    %s Game ID: %s
+                    """,
+                    EscapeSequences.SET_TEXT_COLOR_BLUE + game.gameName(),
+                    EscapeSequences.SET_TEXT_COLOR_GREEN, EscapeSequences.SET_TEXT_COLOR_WHITE, EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY, EscapeSequences.SET_TEXT_COLOR_GREEN,
+                    (EscapeSequences.SET_TEXT_COLOR_WHITE + (game.whiteUsername() == null ? EscapeSequences.SET_TEXT_COLOR_GREEN + "No player" : game.whiteUsername())),
+                    (EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY + (game.blackUsername() == null ? EscapeSequences.SET_TEXT_COLOR_GREEN + "No player" : game.blackUsername())),
+                    EscapeSequences.SET_TEXT_COLOR_BLUE, key);
             s.append(gameListing);
-        }
+        });
         return s.toString();
+    }
+
+    private void assignGameIndexes(GameResponse gameRes){
+        Map<Integer, GameData> gameIndexes = new HashMap<>();
+        HashSet<GameData> games = gameRes.getGames();
+        int i = 1;
+        for(GameData game: games){
+            gameIndexes.put(i, game);
+            i++;
+        }
+        ChessClient.getClient().setCurrentGames(gameIndexes);
     }
 
     private <T> T httpHandler(String method, String endpoint, Object request, Class<T> resClass) throws ResponseException {

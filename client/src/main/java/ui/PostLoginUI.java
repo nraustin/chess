@@ -6,6 +6,8 @@ import request.JoinGameRequest;
 import response.GameResponse;
 import web.ChessClient;
 
+import java.util.Map;
+
 public class PostLoginUI implements UserInterface {
 
     public String eval(String cmd, String[] params) throws ResponseException {
@@ -29,8 +31,7 @@ public class PostLoginUI implements UserInterface {
                 return observeGame(params);
             }
             default -> {
-//                return help();
-                return observeGame("22025");
+                return help();
             }
         }
     }
@@ -76,7 +77,10 @@ public class PostLoginUI implements UserInterface {
         if(params.length != 2){
             throw new ResponseException(400, "Expected: join <GAME ID> <WHITE|BLACK|empty>");
         }
-        ChessClient.getClient().getServer().joinGame(new JoinGameRequest(params[1].toUpperCase(), Integer.parseInt(params[0])));
+        Map<Integer, GameData> currentGames = ChessClient.getClient().getCurrentGames();
+        Integer gameID = currentGames.get(Integer.parseInt(params[0])).gameID();
+
+        ChessClient.getClient().getServer().joinGame(new JoinGameRequest(params[1].toUpperCase(), gameID));
 
         ChessClient.getClient().setState(State.GAMEPLAY);
         return String.format("%s joined game %s", ChessClient.getClient().getUser().username(), params[0]);

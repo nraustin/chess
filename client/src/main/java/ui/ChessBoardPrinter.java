@@ -8,25 +8,28 @@ import java.util.List;
 
 public class ChessBoardPrinter {
 
-    public static String printBoards(ChessGame game, ChessGame.TeamColor color){
+    public static String printBoard(ChessGame game, ChessGame.TeamColor color){
         ChessBoard board = game.getBoard();
+        board.resetBoard();
         StringBuilder s = new StringBuilder();
 
-        int rowStart = (color == ChessGame.TeamColor.WHITE ? 8 : 1);
-        int rowEnd = (color == ChessGame.TeamColor.WHITE ? 0 : 9);
-        int i = (color == ChessGame.TeamColor.WHITE ? -1 : 1);
-
-        s.append(EscapeSequences.CLEAR_FORMAT);
+        s.append(EscapeSequences.CLEAR_FORMAT).append("\n");
         columnLabelPrinter(s, color);
         s.append("   \n");
 
-        for(int row = 8; row > 0; row--) {
+        // meh
+        int rowStart = (color == ChessGame.TeamColor.WHITE ? 8 : 1);
+        int rowEnd = (color == ChessGame.TeamColor.WHITE ? 0 : 9);
+        int rowIncrement = (color == ChessGame.TeamColor.WHITE ? -1 : 1);
+        int colStart = (rowStart == 8 ? 1 : 8);
+        int colIncrement = (rowIncrement == -1 ? 1 : -1);
+
+        for(int row = rowStart; rowEnd == 0 ? row > rowEnd : row < rowEnd; row += rowIncrement) {
             s.append(" ").append(row).append(" ");
-            for(int col = 1; col < 9; col++){
-                s.append((col + row) % 2 == 0 ? EscapeSequences.SET_BG_COLOR_DARK_BROWN : EscapeSequences.SET_BG_COLOR_LIGHT_YELLOW);
+            for(int col = colStart; rowEnd == 0 ? col < 9: col > 0; col += colIncrement){
+                s.append((col + row) % 2 == 0 ? EscapeSequences.SET_BG_COLOR_DARK_GREY : EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
                 ChessPosition position = new ChessPosition(row, col);
                 if(board.getPiece(position) != null){
-                    s.append(EscapeSequences.EMPTY);
                     // should refactor
                     switch (board.getPiece(position).getPieceType()){
                         case QUEEN -> s.append(board.getPiece(position).getTeamColor() == ChessGame.TeamColor.WHITE ? EscapeSequences.WHITE_QUEEN : EscapeSequences.BLACK_QUEEN);
@@ -36,7 +39,6 @@ public class ChessBoardPrinter {
                         case ROOK -> s.append(board.getPiece(position).getTeamColor() == ChessGame.TeamColor.WHITE ? EscapeSequences.WHITE_ROOK : EscapeSequences.BLACK_ROOK);
                         case PAWN -> s.append(board.getPiece(position).getTeamColor() == ChessGame.TeamColor.WHITE ? EscapeSequences.WHITE_PAWN : EscapeSequences.BLACK_PAWN);
                     }
-                    s.append(EscapeSequences.EMPTY);
                 } else{
                     s.append(EscapeSequences.EMPTY);
                 }
@@ -52,15 +54,15 @@ public class ChessBoardPrinter {
 
     private static StringBuilder columnLabelPrinter(StringBuilder s, ChessGame.TeamColor color){
         String[] columnLabels = {"a", "b", "c", "d", "e", "f", "g", "h"};
-        s.append("   \u2002\u2009");
+        s.append("   \u2002\u2009\u200A");
         if(color == ChessGame.TeamColor.WHITE){
             for(String label : columnLabels){
-                s.append(label).append(" \u2003");
+                s.append(label).append("\u2002\u2002\u2004\u2004"); // It just works
             }
         }
         else {
             for(int i = 7; i >=0; i--){
-                s.append(columnLabels[i]).append(" \u2003");
+                s.append(columnLabels[i]).append("\u2002\u2002\u2004\u2004"); // I am somewhat proud of this
             }
         }
         return s;
