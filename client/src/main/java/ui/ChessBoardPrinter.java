@@ -13,8 +13,8 @@ public class ChessBoardPrinter {
         board.resetBoard();
         StringBuilder s = new StringBuilder();
 
-        s.append(EscapeSequences.CLEAR_FORMAT).append("\n");
-        s.append("      ").append(color == ChessGame.TeamColor.WHITE ? "White team perspective" : "Black team perspective").append("\n");
+        s.append("\n").append(EscapeSequences.SET_TEXT_BOLD);
+        s.append("      ").append(color == ChessGame.TeamColor.WHITE ? "White team perspective" : "Black team perspective").append(EscapeSequences.CLEAR_FORMAT).append("\n");
         columnLabelPrinter(s, color);
         s.append("   \n");
 
