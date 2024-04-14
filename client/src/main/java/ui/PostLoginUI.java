@@ -1,11 +1,13 @@
 package ui;
 
+import chess.ChessGame;
 import exception.ResponseException;
 import model.GameData;
 import request.JoinGameRequest;
 import response.GameResponse;
 import web.ChessClient;
 
+import java.io.IOException;
 import java.util.Map;
 
 public class PostLoginUI implements UserInterface {
@@ -78,12 +80,21 @@ public class PostLoginUI implements UserInterface {
             throw new ResponseException(400, "Expected: join <GAME ID> <WHITE|BLACK|empty>");
         }
         Map<Integer, GameData> currentGames = ChessClient.getClient().getCurrentGames();
-        Integer gameID = currentGames.get(Integer.parseInt(params[0])).gameID();
+        GameData gameData  = currentGames.get(Integer.parseInt(params[0]));
         String color = params[1].toUpperCase().equals("EMPTY") ? null : params[1].toUpperCase();
+        ChessClient.getClient().setCurrentGame(gameData);
+        ChessClient.getClient().setPlayerColor(color);
 
-        ChessClient.getClient().getServer().joinGame(new JoinGameRequest(color, gameID));
+        ChessClient.getClient().getServer().joinGame(new JoinGameRequest(color, gameData.gameID()));
+
+        try{
+            ChessClient.getClient().getWebSocketFacade().joinPlayer();
+        } catch (IOException e){
+            throw new ResponseException(500, e.getMessage());
+        }
 
         ChessClient.getClient().setState(State.GAMEPLAY);
+
         return String.format("%s joined game %s", ChessClient.getClient().getUser().username(), params[0]);
     }
 

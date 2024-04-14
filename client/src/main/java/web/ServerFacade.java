@@ -40,17 +40,17 @@ public class ServerFacade {
 
     public void login(UserData userData) throws ResponseException {
         AuthData authData = httpHandler("POST", "/session", userData, AuthData.class);
-        authToken = authData.authToken();
+        setAuthToken(authData.authToken());
     }
 
     public void register(UserData userData) throws ResponseException {
         AuthData authData = httpHandler("POST", "/user", userData, AuthData.class);
-        authToken = authData.authToken();
+        setAuthToken(authData.authToken());
     }
 
     public void logout() throws ResponseException {
         httpHandler("DELETE", "/session", null, null);
-        authToken = null;
+        setAuthToken(null);
     }
 
     public int createGame(GameData gameData) throws ResponseException {

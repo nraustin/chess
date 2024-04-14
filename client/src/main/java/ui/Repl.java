@@ -1,15 +1,17 @@
 package ui;
 
 import web.ChessClient;
+import web.websocket.NotificationHandler;
 
+import javax.management.Notification;
 import java.util.Scanner;
 
-public class Repl {
+public class Repl implements NotificationHandler {
 
     private final ChessClient client;
 
     public Repl(String serverURL) {
-        client = new ChessClient(serverURL);
+        client = new ChessClient(serverURL, this);
     }
 
     public void run() {
@@ -32,5 +34,10 @@ public class Repl {
 
     private void printPrompt() {
         System.out.print("\n" + EscapeSequences.SET_TEXT_BOLD + EscapeSequences.SET_TEXT_COLOR_WHITE + client.getState() + " >>> " + EscapeSequences.SET_TEXT_COLOR_MAGENTA);
+    }
+
+    public void notify(String notification){
+        System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + notification);
+        printPrompt();
     }
 }

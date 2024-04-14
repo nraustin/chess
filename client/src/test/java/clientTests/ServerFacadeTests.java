@@ -9,6 +9,7 @@ import request.JoinGameRequest;
 import server.Server;
 import web.ChessClient;
 import web.ServerFacade;
+import web.websocket.NotificationHandler;
 
 import java.rmi.ServerError;
 
@@ -24,13 +25,12 @@ public class ServerFacadeTests {
     private String authToken;
 
     @BeforeAll
-    public static void init() {
+    public static void init() throws ResponseException {
         server = new Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
         serverURL = String.format("http://localhost:%d", port);
-        client = new ChessClient(serverURL);
-        serverFacade = client.getServer();
+        serverFacade = new ServerFacade(serverURL);
     }
 
     @BeforeEach

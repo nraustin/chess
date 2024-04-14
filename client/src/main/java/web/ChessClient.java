@@ -4,10 +4,13 @@ import chess.ChessGame;
 import exception.ResponseException;
 import model.GameData;
 import model.UserData;
+import org.junit.jupiter.engine.config.CachingJupiterConfiguration;
 import ui.PreLoginUI;
 import ui.PostLoginUI;
 import ui.GameUI;
 import ui.State;
+import web.websocket.NotificationHandler;
+import web.websocket.WebSocketFacade;
 
 
 import java.util.Arrays;
@@ -19,12 +22,17 @@ public class ChessClient {
     private static ChessClient client;
     private final String serverURL;
     private ServerFacade server;
+    protected WebSocketFacade wsFacade;
+    private NotificationHandler notificationHandler;
     private State state = State.LOGGEDOUT;
     private static UserData userData;
     private Map<Integer, GameData> clientGames = new HashMap<>();
+    private GameData currentGame;
+    private ChessGame.TeamColor playerColor;
 
-    public ChessClient(String serverURL){
+    public ChessClient(String serverURL, NotificationHandler notificationHandler) {
         server = new ServerFacade(serverURL);
+        this.notificationHandler = notificationHandler;
         this.serverURL = serverURL;
         this.client = this;
     }
@@ -48,6 +56,7 @@ public class ChessClient {
                     return new PostLoginUI().eval(cmd, params);
                 }
                 case GAMEPLAY -> {
+                    wsFacade = new WebSocketFacade(serverURL, notificationHandler);
                     return new GameUI().eval(cmd, params);
                 }
                 default -> {
@@ -102,6 +111,27 @@ public class ChessClient {
 
     public Map<Integer, GameData> getCurrentGames(){
         return clientGames;
+    }
+
+    public void setCurrentGame(GameData game){
+        this.currentGame = game;
+    }
+
+    public GameData getCurrentGame(){
+        return currentGame;
+    }
+
+
+    public WebSocketFacade getWebSocketFacade(){
+        return wsFacade;
+    }
+
+    public ChessGame.TeamColor getPlayerColor() {
+        return playerColor;
+    }
+
+    public void setPlayerColor(String color){
+        this.playerColor = ChessGame.TeamColor.valueOf(color);
     }
 
     public void addGame(GameData gameData){
