@@ -76,12 +76,13 @@ public class PostLoginUI implements UserInterface {
     }
 
     private String joinGame(String ...params) throws ResponseException {
-        if(params.length != 2){
+        if(params.length == 0){
             throw new ResponseException(400, "Expected: join <GAME ID> <WHITE|BLACK|empty>");
         }
         Map<Integer, GameData> currentGames = ChessClient.getClient().getCurrentGames();
         GameData gameData  = currentGames.get(Integer.parseInt(params[0]));
-        String color = params[1].toUpperCase().equals("EMPTY") ? null : params[1].toUpperCase();
+        String color = params.length == 1 ? null : params[1].toUpperCase();
+
         ChessClient.getClient().setCurrentGame(gameData);
         ChessClient.getClient().setPlayerColor(color);
 
@@ -95,7 +96,18 @@ public class PostLoginUI implements UserInterface {
 
         ChessClient.getClient().setState(State.GAMEPLAY);
 
-        return String.format("%s joined game %s", ChessClient.getClient().getUser().username(), params[0]);
+        String whitePlayerUsername = gameData.whiteUsername();
+        String blackPlayerUsername = gameData.blackUsername();
+        String joiningPlayerUsername = ChessClient.getClient().getUser().username();
+
+        if(color == null && !joiningPlayerUsername.equals(whitePlayerUsername) && !joiningPlayerUsername.equals(blackPlayerUsername)){
+            return String.format(
+                    """
+                    %s is observing game %s
+                    (hint): to join a game, select a color to join as.
+                    """, joiningPlayerUsername, gameData.gameName());
+        }
+        return String.format("%s joined game %s", joiningPlayerUsername, params[0]);
     }
 
     private String observeGame(String ...params) throws ResponseException {

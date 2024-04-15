@@ -50,7 +50,7 @@ public class WebSocketHandler {
                 joinPlayer(session, new Gson().fromJson(message, JoinPlayerCommand.class));
             }
             case JOIN_OBSERVER -> {
-
+                joinObserver(session, new Gson().fromJson(message, JoinPlayerCommand.class));
             }
             case MAKE_MOVE -> {
 
@@ -90,7 +90,36 @@ public class WebSocketHandler {
         ServerMessage message = new ServerMessage(gameData.game());
         sendMessage(gameID, message, authToken);
 
-        String notification = String.format("%s has joined as team %s", authData.username(), command.getColor() == ChessGame.TeamColor.WHITE ? "WHITE" : "BLACK");
+        String notification = String.format("%s has joined as team %s!", authData.username(), command.getColor() == ChessGame.TeamColor.WHITE ? "WHITE" : "BLACK");
+        broadcast(authToken, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, notification), gameID);
+
+    }
+
+    private void joinObserver(Session session, JoinPlayerCommand command) throws IOException {
+        String authToken = command.getAuthString();
+        int gameID = command.getGameID();
+
+        AuthData authData = null;
+        GameData gameData = null;
+
+        try {
+            authData = authDAO.getAuth(authToken);
+            gameData = gameDAO.getGame(gameID);
+            if(authData == null){
+                sendError(session, new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: invalid authToken"));
+            }
+            if(gameData == null){
+                sendError(session, new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: could not find game with gameID"));
+            }
+        } catch (DataAccessException e) {
+            sendError(session, new ServerMessage(ServerMessage.ServerMessageType.ERROR, e.getMessage()));
+        }
+
+        sessions.addSessionToGame(gameID, authToken, session);
+        ServerMessage message = new ServerMessage(gameData.game());
+        sendMessage(gameID, message, authToken);
+
+        String notification = String.format("%s is watching", authData.username());
         broadcast(authToken, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, notification), gameID);
 
     }

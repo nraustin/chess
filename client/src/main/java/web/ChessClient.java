@@ -54,6 +54,7 @@ public class ChessClient {
                     return new PreLoginUI().eval(cmd, params);
                 }
                 case LOGGEDIN -> {
+                    server.listGames();
                     return new PostLoginUI().eval(cmd, params);
                 }
                 case GAMEPLAY -> {
@@ -131,7 +132,7 @@ public class ChessClient {
     }
 
     public void setPlayerColor(String color){
-        this.playerColor = ChessGame.TeamColor.valueOf(color);
+        this.playerColor = color == null ? null : ChessGame.TeamColor.valueOf(color);
     }
 
     public void addGame(GameData gameData){
