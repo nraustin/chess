@@ -59,7 +59,7 @@ public class GameUI implements UserInterface {
     }
 
     private String makeMove(){
-
+        return "";
     }
 
 

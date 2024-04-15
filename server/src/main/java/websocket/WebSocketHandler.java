@@ -1,14 +1,23 @@
 package websocket;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import dataAccess.AuthDAO;
 import dataAccess.GameDAO;
 import dataAccess.UserDAO;
-import handler.BaseHandler;
+import dataAccess.exception.DataAccessException;
+import model.AuthData;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.*;
-import spark.Session;
+import org.eclipse.jetty.websocket.api.Session;
+import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.JoinPlayerCommand;
 import webSocketMessages.userCommands.UserGameCommand;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebSocket
 public class WebSocketHandler {
@@ -25,16 +34,16 @@ public class WebSocketHandler {
         this.gameDAO = gameDAO;
     }
 
-    @OnWebSocketConnect
-    public void onConnect(Session session){}
-    @OnWebSocketClose
-    public void onClose(Session session){}
-    @OnWebSocketError
-    public void onError(Throwable throwable){}
+//    @OnWebSocketConnect
+//    public void onConnect(Session session){}
+//    @OnWebSocketClose
+//    public void onClose(Session session){}
+//    @OnWebSocketError
+//    public void onError(Throwable throwable){}
 
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String message){
+    public void onMessage(Session session, String message) throws IOException {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
         switch(command.getCommandType()){
             case JOIN_PLAYER -> {
@@ -55,8 +64,65 @@ public class WebSocketHandler {
         }
     }
 
-    private void joinPlayer(Session session, JoinPlayerCommand command){
 
+
+    private void joinPlayer(Session session, JoinPlayerCommand command) throws IOException {
+        String authToken = command.getAuthString();
+        int gameID = command.getGameID();
+
+        AuthData authData = null;
+        GameData gameData = null;
+
+        try {
+            authData = authDAO.getAuth(authToken);
+            gameData = gameDAO.getGame(gameID);
+            if(authData == null){
+                sendError(session, new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: invalid authToken"));
+            }
+            if(gameData == null){
+                sendError(session, new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: could not find game with gameID"));
+            }
+        } catch (DataAccessException e) {
+            sendError(session, new ServerMessage(ServerMessage.ServerMessageType.ERROR, e.getMessage()));
+        }
+
+        sessions.addSessionToGame(gameID, authToken, session);
+        ServerMessage message = new ServerMessage(gameData.game());
+        sendMessage(gameID, message, authToken);
+
+        String notification = String.format("%s has joined as team %s", authData.username(), command.getColor() == ChessGame.TeamColor.WHITE ? "WHITE" : "BLACK");
+        broadcast(authToken, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, notification), gameID);
+
+    }
+
+    private void sendMessage(int gameID, ServerMessage message, String authToken) throws IOException {
+        Session session = sessions.getSessionsForGame(gameID).get(authToken);
+        session.getRemote().sendString(new Gson().toJson(message));
+    }
+
+    private void sendError(Session session, ServerMessage message) throws IOException {
+        session.getRemote().sendString(new Gson().toJson(message));
+    }
+
+    private void broadcast(String excludeAuth, ServerMessage message, int gameID) throws IOException {
+        Map<String, Session> sMap = sessions.getSessionsForGame(gameID);
+        ArrayList<Session> removeList = new ArrayList<>();
+
+        for(Map.Entry<String, Session> entry: sMap.entrySet()){
+            Session session = entry.getValue();
+            String authToken = entry.getKey();
+            if(session.isOpen()){
+                if(!authToken.equals(excludeAuth)){
+                    sendMessage(gameID, message, authToken);
+                }
+            } else {
+                removeList.add(session);
+            }
+        }
+
+        for(Session closedS: removeList){
+            sessions.removeSession(closedS);
+        }
     }
 
 

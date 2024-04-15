@@ -24,6 +24,7 @@ public class WebSocketFacade extends Endpoint implements MessageHandler.Whole<St
         try{
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/connect");
+            System.out.println(socketURI);
             this.notificationHandler = notificationHandler;
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
@@ -32,6 +33,8 @@ public class WebSocketFacade extends Endpoint implements MessageHandler.Whole<St
             this.session.addMessageHandler(this);
 
         } catch (URISyntaxException | DeploymentException | IOException e){
+            e.printStackTrace();
+
             throw new ResponseException(500, e.getMessage());
         }
     }

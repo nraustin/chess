@@ -8,6 +8,7 @@ import dataAccess.sql.SQLGameDAO;
 import dataAccess.sql.SQLUserDAO;
 import handler.*;
 import spark.*;
+import websocket.WebSocketHandler;
 
 public class Server {
 
@@ -40,7 +41,9 @@ public class Server {
         RegisterHandler registerHandler = new RegisterHandler(userDAO, gameDAO, authDAO);
         SessionHandler sessionHandler = new SessionHandler(userDAO, gameDAO, authDAO);
         GameHandler gameHandler = new GameHandler(userDAO, gameDAO, authDAO);
+        WebSocketHandler webSocketHandler = new WebSocketHandler(userDAO, authDAO, gameDAO);
 
+        Spark.webSocket("/connect", webSocketHandler);
         // Initialize routes
         Spark.delete("/db", initializeHandler::handle);
         Spark.post("/user", registerHandler::handle);

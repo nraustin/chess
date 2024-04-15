@@ -47,16 +47,16 @@ public class ChessClient {
             String cmd = (tokens.length > 0) ? tokens[0] : "help";
             String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
 
+            wsFacade = new WebSocketFacade(serverURL, notificationHandler);
+
             switch(state) {
                 case LOGGEDOUT -> {
                     return new PreLoginUI().eval(cmd, params);
                 }
                 case LOGGEDIN -> {
-                    server.listGames();
                     return new PostLoginUI().eval(cmd, params);
                 }
                 case GAMEPLAY -> {
-                    wsFacade = new WebSocketFacade(serverURL, notificationHandler);
                     return new GameUI().eval(cmd, params);
                 }
                 default -> {
