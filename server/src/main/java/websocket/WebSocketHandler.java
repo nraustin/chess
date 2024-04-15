@@ -7,6 +7,7 @@ import dataAccess.UserDAO;
 import handler.BaseHandler;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import spark.Session;
+import webSocketMessages.userCommands.JoinPlayerCommand;
 import webSocketMessages.userCommands.UserGameCommand;
 
 @WebSocket
@@ -35,11 +36,28 @@ public class WebSocketHandler {
     @OnWebSocketMessage
     public void onMessage(Session session, String message){
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
+        switch(command.getCommandType()){
+            case JOIN_PLAYER -> {
+                joinPlayer(session, new Gson().fromJson(message, JoinPlayerCommand.class));
+            }
+            case JOIN_OBSERVER -> {
 
+            }
+            case MAKE_MOVE -> {
+
+            }
+            case LEAVE -> {
+
+            }
+            case RESIGN -> {
+
+            }
+        }
     }
 
+    private void joinPlayer(Session session, JoinPlayerCommand command){
 
-
+    }
 
 
 
