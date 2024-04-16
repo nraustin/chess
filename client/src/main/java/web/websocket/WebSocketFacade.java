@@ -39,12 +39,13 @@ public class WebSocketFacade extends Endpoint implements MessageHandler.Whole<St
     }
 
     public void joinPlayer() throws IOException {
-        UserGameCommand command = new JoinPlayerCommand(ChessClient.getClient().getServer().getAuthToken(), ChessClient.getClient().getCurrentGame().gameID(), ChessClient.getClient().getPlayerColor());
+        UserGameCommand command = new JoinPlayerCommand(ChessClient.getClient().getServer().getAuthToken(), ChessClient.getClient().getCurrentGame().gameID(), ChessClient.getClient().getPlayerColor(), false);
         send(command);
     }
 
-    public void joinObserver(){
-
+    public void joinObserver() throws IOException {
+        UserGameCommand command = new JoinPlayerCommand(ChessClient.getClient().getServer().getAuthToken(), ChessClient.getClient().getCurrentGame().gameID(), ChessClient.getClient().getPlayerColor(), true);
+        send(command);
     }
 
     public void makeMove(){

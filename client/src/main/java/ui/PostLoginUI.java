@@ -81,7 +81,16 @@ public class PostLoginUI implements UserInterface {
         }
         Map<Integer, GameData> currentGames = ChessClient.getClient().getCurrentGames();
         GameData gameData  = currentGames.get(Integer.parseInt(params[0]));
+
         String color = params.length == 1 ? null : params[1].toUpperCase();
+
+        String whitePlayerUsername = gameData.whiteUsername();
+        String blackPlayerUsername = gameData.blackUsername();
+        String joiningPlayerUsername = ChessClient.getClient().getUser().username();
+
+        boolean returningPlayer = color == null && joiningPlayerUsername.equals(whitePlayerUsername) || joiningPlayerUsername.equals(blackPlayerUsername);
+        boolean newPlayer = color != null;
+        boolean observer = !returningPlayer && !newPlayer;
 
         ChessClient.getClient().setCurrentGame(gameData);
         ChessClient.getClient().setPlayerColor(color);
@@ -89,18 +98,18 @@ public class PostLoginUI implements UserInterface {
         ChessClient.getClient().getServer().joinGame(new JoinGameRequest(color, gameData.gameID()));
 
         try{
-            ChessClient.getClient().getWebSocketFacade().joinPlayer();
+            if(!observer){
+                ChessClient.getClient().getWebSocketFacade().joinPlayer();
+            } else{
+                ChessClient.getClient().getWebSocketFacade().joinObserver();
+            }
         } catch (IOException e){
             throw new ResponseException(500, e.getMessage());
         }
 
         ChessClient.getClient().setState(State.GAMEPLAY);
 
-        String whitePlayerUsername = gameData.whiteUsername();
-        String blackPlayerUsername = gameData.blackUsername();
-        String joiningPlayerUsername = ChessClient.getClient().getUser().username();
-
-        if(color == null && !joiningPlayerUsername.equals(whitePlayerUsername) && !joiningPlayerUsername.equals(blackPlayerUsername)){
+        if(observer){
             return String.format(
                     """
                     %s is observing game %s
