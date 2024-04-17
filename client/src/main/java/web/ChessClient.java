@@ -28,6 +28,7 @@ public class ChessClient {
     private static UserData userData;
     private Map<Integer, GameData> clientGames = new HashMap<>();
     private GameData currentGame;
+    private int gameID;
     private ChessGame.TeamColor playerColor;
 
     public ChessClient(String serverURL, NotificationHandler notificationHandler) {
@@ -122,6 +123,13 @@ public class ChessClient {
         return currentGame;
     }
 
+    public void setGameID(int gameID){
+        this.gameID = gameID;
+    }
+
+    public int getGameID() {
+        return gameID;
+    }
 
     public WebSocketFacade getWebSocketFacade(){
         return wsFacade;

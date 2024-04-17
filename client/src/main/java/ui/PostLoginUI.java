@@ -76,46 +76,30 @@ public class PostLoginUI implements UserInterface {
     }
 
     private String joinGame(String ...params) throws ResponseException {
-        if(params.length == 0){
-            throw new ResponseException(400, "Expected: join <GAME ID> <WHITE|BLACK|empty>");
+        if(params.length != 2){
+            // Why the ambiguity for rejoin?
+            throw new ResponseException(400, "Expected: join <GAME ID> <WHITE|BLACK>");
         }
+
+        int displayedID = Integer.parseInt(params[0]);
         Map<Integer, GameData> currentGames = ChessClient.getClient().getCurrentGames();
-        GameData gameData  = currentGames.get(Integer.parseInt(params[0]));
+        Integer gameID = currentGames.get(displayedID).gameID();
+        String color = params[1].toUpperCase();
 
-        String color = params.length == 1 ? null : params[1].toUpperCase();
+        ChessClient.getClient().getServer().joinGame(new JoinGameRequest(color, gameID));
 
-        String whitePlayerUsername = gameData.whiteUsername();
-        String blackPlayerUsername = gameData.blackUsername();
-        String joiningPlayerUsername = ChessClient.getClient().getUser().username();
-
-        boolean returningPlayer = color == null && joiningPlayerUsername.equals(whitePlayerUsername) || joiningPlayerUsername.equals(blackPlayerUsername);
-        boolean newPlayer = color != null;
-        boolean observer = !returningPlayer && !newPlayer;
-
-        ChessClient.getClient().setCurrentGame(gameData);
+        ChessClient.getClient().setGameID(gameID);
         ChessClient.getClient().setPlayerColor(color);
 
-        ChessClient.getClient().getServer().joinGame(new JoinGameRequest(color, gameData.gameID()));
-
         try{
-            if(!observer){
-                ChessClient.getClient().getWebSocketFacade().joinPlayer();
-            } else{
-                ChessClient.getClient().getWebSocketFacade().joinObserver();
-            }
+            ChessClient.getClient().getWebSocketFacade().joinPlayer();
         } catch (IOException e){
             throw new ResponseException(500, e.getMessage());
         }
 
         ChessClient.getClient().setState(State.GAMEPLAY);
+        String joiningPlayerUsername = ChessClient.getClient().getUser().username();
 
-        if(observer){
-            return String.format(
-                    """
-                    %s is observing game %s
-                    (hint): to join a game, select a color to join as.
-                    """, joiningPlayerUsername, gameData.gameName());
-        }
         return String.format("%s joined game %s", joiningPlayerUsername, params[0]);
     }
 
@@ -127,7 +111,15 @@ public class PostLoginUI implements UserInterface {
         Integer gameID = currentGames.get(Integer.parseInt(params[0])).gameID();
         String gameName = currentGames.get(Integer.parseInt(params[0])).gameName();
 
+        ChessClient.getClient().setGameID(gameID);
+
         ChessClient.getClient().getServer().joinGame(new JoinGameRequest(null, gameID));
+
+        try{
+            ChessClient.getClient().getWebSocketFacade().joinObserver();
+        } catch (IOException e){
+            throw new ResponseException(500, e.getMessage());
+        }
 
         ChessClient.getClient().setState(State.GAMEPLAY);
         return String.format("%s is observing game '%s'", ChessClient.getClient().getUser().username(), gameName);

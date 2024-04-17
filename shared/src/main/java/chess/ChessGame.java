@@ -16,9 +16,12 @@ public class ChessGame {
     private ChessBoard board;
     private ChessBoard simulationBoard;
     private ChessPiece piece;
+    private boolean gameOver;
+
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
         this.board = new ChessBoard();
+        this.gameOver = false;
     }
 
     /**
@@ -85,7 +88,7 @@ public class ChessGame {
         ChessPiece piece = board.getPiece(move.getStartPosition());
         Collection<ChessMove> legalMoves = validMoves(move.getStartPosition());
 
-        if(!legalMoves.contains(move)){
+        if(legalMoves == null || !legalMoves.contains(move)){
             throw new InvalidMoveException("Invalid move");
 
         }
@@ -200,6 +203,14 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         return board;
+    }
+
+    public boolean isGameOver(){
+        return gameOver;
+    }
+
+    public void endGame(){
+        this.gameOver = true;
     }
 
     @Override

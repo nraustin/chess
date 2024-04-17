@@ -14,6 +14,7 @@ public class ServerMessage {
     ServerMessageType serverMessageType;
     private ChessGame game;
     private String message;
+    private String errorMessage;
 
     public enum ServerMessageType {
         LOAD_GAME,
@@ -23,6 +24,10 @@ public class ServerMessage {
 
     public ServerMessage(ServerMessageType type, String message) {
         this.serverMessageType = type;
+        // And there goes 2 hours of coding time
+        if(this.serverMessageType == ServerMessageType.ERROR){
+            this.errorMessage = message;
+        }
         this.message = message;
     }
 

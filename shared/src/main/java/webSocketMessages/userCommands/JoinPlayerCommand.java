@@ -5,13 +5,14 @@ import chess.ChessGame;
 public class JoinPlayerCommand extends UserGameCommand{
 
     private int gameID;
-    ChessGame.TeamColor color;
+    // Pretty sure tests should pass irrespective of variable naming
+    ChessGame.TeamColor playerColor;
 
-    public JoinPlayerCommand(String authToken, int gameID, ChessGame.TeamColor color, boolean observer){
+    public JoinPlayerCommand(UserGameCommand.CommandType commandType, String authToken, int gameID, ChessGame.TeamColor playerColor){
         super(authToken);
-        this.commandType = observer ? CommandType.JOIN_OBSERVER : CommandType.JOIN_PLAYER;
+        this.commandType = commandType;
         this.gameID = gameID;
-        this.color = color;
+        this.playerColor = playerColor;
     }
 
     public int getGameID() {
@@ -19,6 +20,6 @@ public class JoinPlayerCommand extends UserGameCommand{
     }
 
     public ChessGame.TeamColor getColor(){
-        return color;
+        return playerColor;
     }
 }

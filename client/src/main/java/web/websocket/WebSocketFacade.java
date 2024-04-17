@@ -1,13 +1,13 @@
 package web.websocket;
 
+import chess.ChessMove;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import ui.ChessBoardPrinter;
 import ui.EscapeSequences;
 import web.ChessClient;
 import webSocketMessages.serverMessages.ServerMessage;
-import webSocketMessages.userCommands.JoinPlayerCommand;
-import webSocketMessages.userCommands.UserGameCommand;
+import webSocketMessages.userCommands.*;
 
 import javax.websocket.*;
 import java.awt.*;
@@ -39,25 +39,28 @@ public class WebSocketFacade extends Endpoint implements MessageHandler.Whole<St
     }
 
     public void joinPlayer() throws IOException {
-        UserGameCommand command = new JoinPlayerCommand(ChessClient.getClient().getServer().getAuthToken(), ChessClient.getClient().getCurrentGame().gameID(), ChessClient.getClient().getPlayerColor(), false);
+        UserGameCommand command = new JoinPlayerCommand(UserGameCommand.CommandType.JOIN_PLAYER, ChessClient.getClient().getServer().getAuthToken(), ChessClient.getClient().getGameID(), ChessClient.getClient().getPlayerColor());
         send(command);
     }
 
     public void joinObserver() throws IOException {
-        UserGameCommand command = new JoinPlayerCommand(ChessClient.getClient().getServer().getAuthToken(), ChessClient.getClient().getCurrentGame().gameID(), ChessClient.getClient().getPlayerColor(), true);
+        UserGameCommand command = new JoinPlayerCommand(UserGameCommand.CommandType.JOIN_OBSERVER, ChessClient.getClient().getServer().getAuthToken(), ChessClient.getClient().getGameID(), ChessClient.getClient().getPlayerColor());
         send(command);
     }
 
-    public void makeMove(){
-
+    public void makeMove(ChessMove move) throws IOException {
+        ChessMoveCommand command = new ChessMoveCommand(ChessClient.getClient().getServer().getAuthToken(), move, ChessClient.getClient().getGameID());
+        send(command);
     }
 
-    public void leaveGame(){
-
+    public void leaveGame() throws IOException {
+        LeaveCommand command = new LeaveCommand(UserGameCommand.CommandType.LEAVE, ChessClient.getClient().getServer().getAuthToken(), ChessClient.getClient().getGameID());
+        send(command);
     }
 
-    public void resignGame(){
-
+    public void resignGame() throws IOException {
+        ResignCommand command = new ResignCommand(UserGameCommand.CommandType.RESIGN, ChessClient.getClient().getServer().getAuthToken(), ChessClient.getClient().getGameID());
+        send(command);
     }
 
     private void send(UserGameCommand command) throws IOException {
