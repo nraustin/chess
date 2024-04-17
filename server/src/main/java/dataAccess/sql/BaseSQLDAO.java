@@ -49,17 +49,17 @@ public abstract class BaseSQLDAO {
     protected <D> D query(String sqlStatement, Function<ResultSet, D> rsHandler, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(sqlStatement)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
+                for (var k = 0; k < params.length; k++) {
+                    var param = params[k];
 
                     if(param instanceof String p){
-                        ps.setString(i + 1, p);
+                        ps.setString(k + 1, p);
                     }
                     else if(param instanceof Integer p){
-                        ps.setInt(i+ 1, p);
+                        ps.setInt(k+ 1, p);
                     }
                     else if(param == null){
-                        ps.setNull(i+ 1, NULL);
+                        ps.setNull(k+ 1, NULL);
                     }
                 }
                 var rs = ps.executeQuery();

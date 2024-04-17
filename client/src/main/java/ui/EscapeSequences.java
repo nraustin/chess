@@ -52,13 +52,6 @@ public class EscapeSequences {
     public static final String SET_BG_COLOR_LIGHT_YELLOW = SET_BG_COLOR + "222m";
     public static final String RESET_BG_COLOR = SET_BG_COLOR + "0m";
 
-//    public static final String WHITE_KING = " ♔ ";
-//    public static final String WHITE_QUEEN = " ♕ ";
-//    public static final String WHITE_BISHOP = " ♗ ";
-//    public static final String WHITE_KNIGHT = " ♘ ";
-//    public static final String WHITE_ROOK = " ♖ ";
-//    public static final String WHITE_PAWN = " ♙ ";
-
     public static final String WHITE_KING = SET_TEXT_COLOR_WHITE + " ♚ ";
     public static final String WHITE_QUEEN = SET_TEXT_COLOR_WHITE + " ♛ ";
     public static final String WHITE_BISHOP = SET_TEXT_COLOR_WHITE + " ♝ ";
