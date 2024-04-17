@@ -167,17 +167,16 @@ public class WebSocketHandler {
                 game.makeMove(move);
                 gameDAO.updateGame(gameData);
             } catch (InvalidMoveException | DataAccessException e){
-                sendError(session, new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error:" + e.getMessage()));
+                sendError(session, new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: " + e.getMessage()));
                 return;
             }
 
-            ServerMessage message = new ServerMessage(gameData.game());
+            ServerMessage message = new ServerMessage(game);
             sendMessage(gameID, message, authToken);
             broadcast(authToken, message, gameID);
 
-            ServerMessage moveNotification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, String.format("%s made a move: %s", authData.username(), command.getMove()));
+            ServerMessage moveNotification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, String.format("%s made a move: %s", authData.username(), command.parsedMove()));
             broadcast(authToken, moveNotification, gameID);
-
             String opponent = authData.username().equals(gameData.whiteUsername()) ? gameData.blackUsername() : gameData.whiteUsername();
 
             if(game.isInCheck(game.getTeamTurn())){
@@ -228,7 +227,7 @@ public class WebSocketHandler {
                 gameDAO.updateGame(gameData);
             } catch (DataAccessException e) {
                 System.out.println("c3");
-                sendError(session, new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error:" + e.getMessage()));
+                sendError(session, new ServerMessage(ServerMessage.ServerMessageType.ERROR, "Error: " + e.getMessage()));
                 return;
             }
 

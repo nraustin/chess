@@ -1,8 +1,6 @@
 package web;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
-import exception.DataAccessException;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -56,6 +54,7 @@ public class ServerFacade {
     public int createGame(GameData gameData) throws ResponseException {
         GameResponse gameRes = httpHandler("POST", "/game", gameData, GameResponse.class);
         ChessClient.getClient().addGame(gameRes.getGame());
+        ChessClient.getClient().setCurrentGameData(gameRes.getGame());
 
         return gameRes.getGameID();
     }

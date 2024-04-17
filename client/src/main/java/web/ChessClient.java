@@ -1,10 +1,8 @@
 package web;
 
 import chess.ChessGame;
-import exception.ResponseException;
 import model.GameData;
 import model.UserData;
-import org.junit.jupiter.engine.config.CachingJupiterConfiguration;
 import ui.PreLoginUI;
 import ui.PostLoginUI;
 import ui.GameUI;
@@ -27,9 +25,11 @@ public class ChessClient {
     private State state = State.LOGGEDOUT;
     private static UserData userData;
     private Map<Integer, GameData> clientGames = new HashMap<>();
-    private GameData currentGame;
+    private ChessGame currentGame;
+    private GameData currentGameData;
     private int gameID;
     private ChessGame.TeamColor playerColor;
+
 
     public ChessClient(String serverURL, NotificationHandler notificationHandler) {
         server = new ServerFacade(serverURL);
@@ -115,12 +115,16 @@ public class ChessClient {
         return clientGames;
     }
 
-    public void setCurrentGame(GameData game){
-        this.currentGame = game;
+    public void setCurrentGameData(GameData gameData){
+        this.currentGameData = gameData;
     }
 
-    public GameData getCurrentGame(){
+    public ChessGame getCurrentGame(){
         return currentGame;
+    }
+
+    public void setCurrentGame(ChessGame currentGame) {
+        this.currentGame = currentGame;
     }
 
     public void setGameID(int gameID){

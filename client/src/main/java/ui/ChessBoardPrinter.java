@@ -2,16 +2,22 @@ package ui;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPosition;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ChessBoardPrinter {
 
+    private static Collection<ChessMove> highlightMoves;
+    private static ArrayList<ChessPosition> highlightPositions = new ArrayList<>();
+
     public static String printBoard(ChessGame game, ChessGame.TeamColor color){
         ChessBoard board = game.getBoard();
-        board.resetBoard();
         StringBuilder s = new StringBuilder();
+        highlightPositions = getHighlightPositions();
 
         s.append("\n").append(EscapeSequences.SET_TEXT_BOLD);
         s.append("      ").append(color == ChessGame.TeamColor.WHITE ? "White team perspective" : "Black team perspective").append(EscapeSequences.CLEAR_FORMAT).append("\n");
@@ -28,8 +34,12 @@ public class ChessBoardPrinter {
         for(int row = rowStart; rowEnd == 0 ? row > rowEnd : row < rowEnd; row += rowIncrement) {
             s.append(" ").append(row).append(" ");
             for(int col = colStart; rowEnd == 0 ? col < 9: col > 0; col += colIncrement){
-                s.append((col + row) % 2 == 0 ? EscapeSequences.SET_BG_COLOR_GREY : EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
                 ChessPosition position = new ChessPosition(row, col);
+                if(highlightPositions != null && highlightPositions.contains(position)){
+                    s.append((col + row) % 2 == 0 ? EscapeSequences.SET_BG_COLOR_DARK_GREEN : EscapeSequences.SET_BG_COLOR_GREEN);
+                } else{
+                    s.append((col + row) % 2 == 0 ? EscapeSequences.SET_BG_COLOR_GREY : EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+                }
                 if(board.getPiece(position) != null){
                     // should refactor
                     switch (board.getPiece(position).getPieceType()){
@@ -49,6 +59,7 @@ public class ChessBoardPrinter {
         }
         columnLabelPrinter(s, color);
 
+        highlightPositions = null;
         s.append("\n").append(EscapeSequences.CLEAR_FORMAT).append(EscapeSequences.SET_TEXT_COLOR_GREEN);
         return s.toString();
     }
@@ -58,7 +69,7 @@ public class ChessBoardPrinter {
         s.append("   \u2002\u2009\u200A");
         if(color == ChessGame.TeamColor.WHITE){
             for(String label : columnLabels){
-                s.append(label).append("\u2002\u2002\u2004\u2004"); // It just works
+                s.append(label).append("\u2002\u2002\u2004\u2004"); // It just works (on my machine)
             }
         }
         else {
@@ -67,6 +78,20 @@ public class ChessBoardPrinter {
             }
         }
         return s;
+    }
+
+    public static void setHighlightMoves(Collection<ChessMove> highlightMoves){
+        ChessBoardPrinter.highlightMoves = highlightMoves;
+    }
+
+    private static ArrayList<ChessPosition> getHighlightPositions(){
+        if(highlightMoves == null){
+            return highlightPositions;
+        }
+        for(ChessMove move : highlightMoves){
+            highlightPositions.add(move.getEndPosition());
+        }
+        return highlightPositions;
     }
 
 }

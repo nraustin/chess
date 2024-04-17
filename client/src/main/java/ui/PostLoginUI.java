@@ -1,10 +1,8 @@
 package ui;
 
-import chess.ChessGame;
 import exception.ResponseException;
 import model.GameData;
 import request.JoinGameRequest;
-import response.GameResponse;
 import web.ChessClient;
 
 import java.io.IOException;
@@ -83,12 +81,13 @@ public class PostLoginUI implements UserInterface {
 
         int displayedID = Integer.parseInt(params[0]);
         Map<Integer, GameData> currentGames = ChessClient.getClient().getCurrentGames();
-        Integer gameID = currentGames.get(displayedID).gameID();
+        GameData foundGame = currentGames.get(displayedID);
         String color = params[1].toUpperCase();
 
-        ChessClient.getClient().getServer().joinGame(new JoinGameRequest(color, gameID));
+        ChessClient.getClient().getServer().joinGame(new JoinGameRequest(color, foundGame.gameID()));
 
-        ChessClient.getClient().setGameID(gameID);
+        ChessClient.getClient().setGameID(foundGame.gameID());
+        ChessClient.getClient().setCurrentGameData(foundGame);
         ChessClient.getClient().setPlayerColor(color);
 
         try{
@@ -100,7 +99,7 @@ public class PostLoginUI implements UserInterface {
         ChessClient.getClient().setState(State.GAMEPLAY);
         String joiningPlayerUsername = ChessClient.getClient().getUser().username();
 
-        return String.format("%s joined game %s", joiningPlayerUsername, params[0]);
+        return String.format("%s joined game %s", joiningPlayerUsername, foundGame.gameName());
     }
 
     private String observeGame(String ...params) throws ResponseException {
@@ -108,12 +107,13 @@ public class PostLoginUI implements UserInterface {
             throw new ResponseException(400, "Expected: observe <GAME ID>");
         }
         Map<Integer, GameData> currentGames = ChessClient.getClient().getCurrentGames();
-        Integer gameID = currentGames.get(Integer.parseInt(params[0])).gameID();
-        String gameName = currentGames.get(Integer.parseInt(params[0])).gameName();
+        GameData foundGame = currentGames.get(Integer.parseInt(params[0]));
 
-        ChessClient.getClient().setGameID(gameID);
-
-        ChessClient.getClient().getServer().joinGame(new JoinGameRequest(null, gameID));
+        ChessClient.getClient().setGameID(foundGame.gameID());
+        ChessClient.getClient().setCurrentGameData(foundGame);
+        // temp
+        ChessClient.getClient().setPlayerColor("WHITE");
+        ChessClient.getClient().getServer().joinGame(new JoinGameRequest(null, foundGame.gameID()));
 
         try{
             ChessClient.getClient().getWebSocketFacade().joinObserver();
@@ -122,7 +122,7 @@ public class PostLoginUI implements UserInterface {
         }
 
         ChessClient.getClient().setState(State.GAMEPLAY);
-        return String.format("%s is observing game '%s'", ChessClient.getClient().getUser().username(), gameName);
+        return String.format("%s is observing game %s", ChessClient.getClient().getUser().username(), foundGame.gameName());
     }
 
 

@@ -1,5 +1,6 @@
 package web.websocket;
 
+import chess.ChessGame;
 import chess.ChessMove;
 import com.google.gson.Gson;
 import exception.ResponseException;
@@ -75,6 +76,7 @@ public class WebSocketFacade extends Endpoint implements MessageHandler.Whole<St
         ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
         switch(serverMessage.getServerMessageType()){
             case LOAD_GAME -> {
+                ChessClient.getClient().setCurrentGame(serverMessage.getGame());
                 notificationHandler.notify(ChessBoardPrinter.printBoard(serverMessage.getGame(), ChessClient.getClient().getPlayerColor()));
             }
             case ERROR, NOTIFICATION -> {
